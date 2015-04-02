@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
-namespace Bomberman
+namespace Bomberman.Utilities
 {
     //////////////////////////////////////////////////////////////////////////
     ////License:  The MIT License (MIT)
@@ -21,12 +20,6 @@ namespace Bomberman
      - Added resource 
      - Simplified usage
      */
-
-
-    using System;
-    using Microsoft.Xna.Framework;
-    using Microsoft.Xna.Framework.Graphics;
-
     namespace Examples.Classes
     {
         public class ResolutionRenderer : IDisposable
@@ -94,6 +87,7 @@ namespace Bomberman
                 //calculate new ratio
                 //mark for refresh
                 _dirtyMatrix = true;
+                BackgroundColor = Color.White;
             }
 
             /// <summary>

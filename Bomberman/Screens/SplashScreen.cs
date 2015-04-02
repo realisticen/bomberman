@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Bomberman.BaseClass;
+using Bomberman.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -32,7 +34,7 @@ namespace Bomberman.Screens
         {
             this.content = content;
             image = new Image(content.Load<Texture2D>("SplashScreen/solaLogo")) {Alpha = 0f};
-            image.Postion = new Vector2((owner.Dimensions.X - image.GetWidth()) / 2, (owner.Dimensions.Y - image.GetHeight()) / 2);
+            image.Postion = new Vector2((MainGame.VIRTUAL_RESOLUTION_WIDTH - image.GetWidth()) / 2, (MainGame.VIRTUAL_RESOLUTION_HEIGHT - image.GetHeight()) / 2);
         }
     }
 }

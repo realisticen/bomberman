@@ -1,5 +1,6 @@
-﻿using Bomberman.Examples.Classes;
-using Bomberman.Screens;
+﻿using Bomberman.Screens;
+using Bomberman.Utilities;
+using Bomberman.Utilities.Examples.Classes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -13,9 +14,9 @@ namespace Bomberman
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        private ResolutionRenderer cam;
-        public const int VIRTUAL_RESOLUTION_WIDTH = 1024;
-        public const int VIRTUAL_RESOLUTION_HEIGHT = 576;
+        public ResolutionRenderer cam;
+        public const int VIRTUAL_RESOLUTION_WIDTH = 1344; // Maš 64*21 Tk da...
+        public const int VIRTUAL_RESOLUTION_HEIGHT = 768;
         private ScreenManager screenManager;
 
         public MainGame()
@@ -23,15 +24,21 @@ namespace Bomberman
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            graphics.PreferredBackBufferWidth = 1024;
-            graphics.PreferredBackBufferHeight = 576; // JoloMode
+            graphics.PreferredBackBufferWidth = 1366;
+            graphics.PreferredBackBufferHeight = 768;
             //graphics.PreferredBackBufferWidth = 1920;
             //graphics.PreferredBackBufferHeight = 1080;
             //graphics.PreferredBackBufferWidth = 800;
             //graphics.PreferredBackBufferHeight = 600;
             Window.Position = new Point(0, 0);
             IsMouseVisible = true;
+        }
 
+        public void ChangeWindowSice(int width, int height)
+        {
+            graphics.PreferredBackBufferWidth = width;
+            graphics.PreferredBackBufferHeight = height;
+            cam = new ResolutionRenderer(this, VIRTUAL_RESOLUTION_WIDTH, VIRTUAL_RESOLUTION_HEIGHT, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
         }
 
         /// <summary>
@@ -44,13 +51,20 @@ namespace Bomberman
         {
             // TODO: Add your initialization logic here
             cam = new ResolutionRenderer(this, VIRTUAL_RESOLUTION_WIDTH, VIRTUAL_RESOLUTION_HEIGHT, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
-            cam.BackgroundColor = Color.White;
+            //SetFullScreen(true);
+
             base.Initialize();
         }
 
         public void SetFullScreen(bool value)
         {
             graphics.IsFullScreen = value;
+            if(value)
+                cam = new ResolutionRenderer(this, VIRTUAL_RESOLUTION_WIDTH, VIRTUAL_RESOLUTION_HEIGHT, GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width, GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height);
+            else
+            {
+                cam = new ResolutionRenderer(this, VIRTUAL_RESOLUTION_WIDTH, VIRTUAL_RESOLUTION_HEIGHT, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);                
+            }
         }
 
         /// <summary>
@@ -60,9 +74,9 @@ namespace Bomberman
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            screenManager = new ScreenManager(Content, new Vector2(VIRTUAL_RESOLUTION_WIDTH, VIRTUAL_RESOLUTION_HEIGHT));
+            screenManager = new ScreenManager(this);
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            screenManager.ChangeScreen(new SplashScreen(screenManager)); // todo: naštimi da swe začene spalshcsreen
+            screenManager.ChangeScreen(new MenuScreen(screenManager)); // todo: naštimi da swe začene spalshcsreen
         }
 
         /// <summary>
@@ -87,13 +101,13 @@ namespace Bomberman
 
             base.Update(gameTime);
         }
-
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            cam.SetupVirtualScreenViewport();
             cam.Draw();
             spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, cam.GetTransformationMatrix());
             screenManager.Draw(spriteBatch);

@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Bomberman.BaseClass;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Bomberman
+namespace Bomberman.Utilities
 {
     public class ScreenManager
     {
         private Screen currentScreen;
         private ContentManager content;
         public Vector2 Dimensions;
+        public readonly MainGame game;
 
         public void ChangeScreen(Screen screen)
         {
@@ -23,10 +21,10 @@ namespace Bomberman
             screen.LoadContent(content);
         }
 
-        public ScreenManager(ContentManager Content, Vector2 dimension)
+        public ScreenManager(MainGame gam)
         {
-            content = Content;
-            Dimensions = dimension;
+            game = gam;
+            content = game.Content;
         }
 
         public void Draw(SpriteBatch spriteBatch)

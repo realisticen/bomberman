@@ -11,9 +11,10 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Bomberman.Screens
 {
-    class MapPickScreen : Screen
+    class MapEditorScreen : Screen
     {
-        public MapPickScreen(ScreenManager owner) : base( owner)
+
+        public MapEditorScreen(ScreenManager owner) : base( owner)
         {
         }
 
@@ -30,6 +31,7 @@ namespace Bomberman.Screens
         public override void LoadContent(ContentManager content)
         {
             this.content = content;
+
         }
     }
 }
