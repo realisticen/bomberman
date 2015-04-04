@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE;WINDOWS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -40,11 +41,13 @@
   <ItemGroup>
     <Compile Include="BaseClass\Clickable.cs" />
     <Compile Include="BaseClass\Screen.cs" />
-    <Compile Include="Game\Map.cs" />
+    <Compile Include="GameStuff\Map.cs" />
+    <Compile Include="GameStuff\MovableObject.cs" />
+    <Compile Include="GameStuff\Player.cs" />
     <Compile Include="MainGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Screens\GameScreen.cs" />
+    <Compile Include="Screens\Player1Screen.cs" />
     <Compile Include="Screens\MapEditorScreen.cs" />
     <Compile Include="Screens\MapPickScreen.cs" />
     <Compile Include="Screens\MenuScreen.cs" />
@@ -56,6 +59,9 @@
     <Compile Include="Utilities\ScreenManager.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="OpenTK">
       <HintPath>$(MSBuildProgramFiles32)\MonoGame\v3.0\Assemblies\WindowsGL\OpenTK.dll</HintPath>
     </Reference>
@@ -78,7 +84,9 @@
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <!-- Specify the search path explicitly so the ResolveAssemblyReferences task picks the right ones -->
   <Target Name="BeforeResolveReferences">
     <CreateProperty Value="$(MSBuildProgramFiles32)\MonoGame\v3.0\Assemblies\Windows;$(AssemblySearchPaths)">
