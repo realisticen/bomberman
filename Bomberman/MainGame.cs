@@ -24,7 +24,7 @@ namespace Bomberman
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            graphics.PreferredBackBufferWidth = 1366;
+            graphics.PreferredBackBufferWidth = 1344;
             graphics.PreferredBackBufferHeight = 768;
             //graphics.PreferredBackBufferWidth = 1920;
             //graphics.PreferredBackBufferHeight = 1080;
@@ -76,7 +76,7 @@ namespace Bomberman
             // Create a new SpriteBatch, which can be used to draw textures.
             screenManager = new ScreenManager(this);
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            screenManager.ChangeScreen(new Player1Screen(screenManager)); // todo: naštimi da swe začene spalshcsreen
+            screenManager.ChangeScreen(new MenuScreen(screenManager)); // todo: naštimi da swe začene spalshcsreen
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace Bomberman
         {
             cam.SetupVirtualScreenViewport();
             cam.Draw();
-            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, cam.GetTransformationMatrix());
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, cam.GetTransformationMatrix());
             screenManager.Draw(spriteBatch);
             spriteBatch.End();
             base.Draw(gameTime);

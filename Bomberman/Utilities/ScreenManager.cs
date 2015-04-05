@@ -9,7 +9,7 @@ namespace Bomberman.Utilities
     {
         private Screen currentScreen;
         private ContentManager content;
-        public Vector2 Dimensions;
+        //public Vector2 Dimensions;
         public readonly MainGame game;
 
         public void ChangeScreen(Screen screen)

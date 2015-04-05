@@ -15,6 +15,7 @@ namespace Bomberman.Screens
     class MenuScreen : Screen
     {
         private ButtonManager buttonManager;
+        private Texture2D backgroud;
 
         public MenuScreen(ScreenManager owner) : base( owner)
         {
@@ -22,6 +23,8 @@ namespace Bomberman.Screens
         }
         public override void Draw(SpriteBatch spriteBatch)
         {
+            spriteBatch.Draw(backgroud, Vector2.Zero);
+
             buttonManager.Draw(spriteBatch);
         }
 
@@ -36,12 +39,15 @@ namespace Bomberman.Screens
         public override void LoadContent(ContentManager content)
         {
             this.content = content;
+            backgroud = content.Load<Texture2D>("MenuScreen/background");
+
             buttonManager = new ButtonManager();
             var image = content.Load<Texture2D>("MenuScreen/1player");
             var button = new ButtonImage(new Image(image));
             button.MouseClick += new Clickable.MouseEventHandler(Hide);
             button.MouseLeave += new Clickable.MouseEventHandler(Clear);
             button.MouseEnter += new Clickable.MouseEventHandler(Hover);
+            button.SetPosition(100, 300);
             buttonManager.Buttons.Add(button);
 
             image = content.Load<Texture2D>("MenuScreen/2player");
@@ -49,7 +55,7 @@ namespace Bomberman.Screens
             button.MouseLeave += new Clickable.MouseEventHandler(Clear);
             button.MouseClick += new Clickable.MouseEventHandler(Hide);
             button.MouseEnter += new Clickable.MouseEventHandler(Hover);
-            button.SetPosition(0, 105);
+            button.SetPosition(100, 450);
             buttonManager.Buttons.Add(button);
 
             image = content.Load<Texture2D>("MenuScreen/mapeditor");
@@ -57,7 +63,15 @@ namespace Bomberman.Screens
             button.MouseLeave += new Clickable.MouseEventHandler(Clear);
             button.MouseClick += new Clickable.MouseEventHandler(Hide);
             button.MouseEnter += new Clickable.MouseEventHandler(Hover);
-            button.SetPosition(0, 210);
+            button.SetPosition(780, 300);
+            buttonManager.Buttons.Add(button);
+
+            image = content.Load<Texture2D>("MenuScreen/options");
+            button = new ButtonImage(new Image(image));
+            button.MouseLeave += new Clickable.MouseEventHandler(Clear);
+            button.MouseClick += new Clickable.MouseEventHandler(Exit);
+            button.MouseEnter += new Clickable.MouseEventHandler(Hover);
+            button.SetPosition(900, 450);
             buttonManager.Buttons.Add(button);
 
             image = content.Load<Texture2D>("MenuScreen/exit");
@@ -65,8 +79,9 @@ namespace Bomberman.Screens
             button.MouseLeave += new Clickable.MouseEventHandler(Clear);
             button.MouseClick += new Clickable.MouseEventHandler(Exit);
             button.MouseEnter += new Clickable.MouseEventHandler(Hover);
-            button.SetPosition(0, 315);
+            button.SetPosition(540, 650);
             buttonManager.Buttons.Add(button);
+
         }
 
         private void Hover(object button)
