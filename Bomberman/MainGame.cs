@@ -76,7 +76,7 @@ namespace Bomberman
             // Create a new SpriteBatch, which can be used to draw textures.
             screenManager = new ScreenManager(this);
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            screenManager.ChangeScreen(new MenuScreen(screenManager)); // todo: naštimi da swe začene spalshcsreen
+            screenManager.ChangeScreen(new MapPickScreen(screenManager)); // todo: naštimi da swe začene spalshcsreen
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace Bomberman
         {
             cam.SetupVirtualScreenViewport();
             cam.Draw();
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone, null, cam.GetTransformationMatrix());
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.Default, RasterizerState.CullNone, null, cam.GetTransformationMatrix());
             screenManager.Draw(spriteBatch);
             spriteBatch.End();
             base.Draw(gameTime);

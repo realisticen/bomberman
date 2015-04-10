@@ -15,30 +15,32 @@ namespace Bomberman.Screens
     class Player1Screen : Screen
     {
         private Player player;
+        private Map map;
 
-        public Player1Screen(ScreenManager owner) : base(owner)
+        public Player1Screen(ScreenManager owner, Map _map) : base(owner)
         {
+            map = _map;
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            map.Draw(spriteBatch);
             player.Draw(spriteBatch);
         }
 
         private KeyboardState state;
-        private const int speed = 2;
         public override void Update(GameTime gameTime)
         {
             state = Keyboard.GetState();
             if (state.IsKeyDown(Keys.Up))
                 player.Move(Directons.UP);
-            if (state.IsKeyDown(Keys.Down))
+            else if (state.IsKeyDown(Keys.Down))
                 player.Move(Directons.DOWN);
-            if (state.IsKeyDown(Keys.Left))
+            else if (state.IsKeyDown(Keys.Left))
                 player.Move(Directons.LEFT);
-            if (state.IsKeyDown(Keys.Right))
+            else if (state.IsKeyDown(Keys.Right))
                 player.Move(Directons.RIGHT);
-            player.UpdatePos();
+
             player.Update();
         }
 
@@ -46,6 +48,7 @@ namespace Bomberman.Screens
         {
             this.content = content;
             player = new Player(content.Load<Texture2D>("Game/player"), Color.White);
+            map.LoadTileSet(content);
         }
     }
 }
