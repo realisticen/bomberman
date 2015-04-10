@@ -9,7 +9,7 @@ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
  - You must include authors name in your project. It must be known that you used my code.
- - Don't say you wrote the code.
+ - Don't say you wrote this code.
 
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
