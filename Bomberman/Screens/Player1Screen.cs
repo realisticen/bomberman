@@ -42,6 +42,8 @@ namespace Bomberman.Screens
                 player.Move(Directons.RIGHT);
 
             player.Update();
+
+            map.Colides(player);
         }
 
         public override void LoadContent(ContentManager content)

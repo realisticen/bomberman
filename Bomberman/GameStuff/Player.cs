@@ -11,7 +11,6 @@ namespace Bomberman.GameStuff
     class Player : MovableObject
     {
         public Color PlayerColor;
-        public Rectangle MapCollisionBox;
         public Rectangle HitBox;
 
         private Texture2D spriteSheet;
@@ -45,7 +44,7 @@ namespace Bomberman.GameStuff
             PlayerColor = color;
             Position = new Vector2(600,540);
             sourceRectangle = new Rectangle(0,0,48,86);
-            MapCollisionBox = new Rectangle((int)Position.X, (int)Position.Y + 56, 48, 30);
+            MapCollisionBox = new Rectangle((int)Position.X, (int)Position.Y + 56, 30, 20);
         }
 
         private bool update;
@@ -66,8 +65,9 @@ namespace Bomberman.GameStuff
 
         public void Update()
         {
+            velocity *= 0;
             UpdatePos();
-            MapCollisionBox = new Rectangle((int)Position.X, (int)Position.Y + 56, 48, 30);
+            MapCollisionBox = new Rectangle((int)Position.X + 12, (int)Position.Y + 65, 25, 21);
             if (velocity.Y < 0)
             {
                 if (lastdDirecton == Directons.UP)
@@ -127,8 +127,6 @@ namespace Bomberman.GameStuff
 
                 lastdDirecton = Directons.RIGHT;
             }
-
-            velocity *= 0;
             HitBox = destinationRectangle;
         }
 
@@ -137,7 +135,7 @@ namespace Bomberman.GameStuff
         {
             spriteBatch.Draw(spriteSheet, new Rectangle((int)Position.X, (int)Position.Y, 48, 86), sourceRectangle,PlayerColor);
             
-            spriteBatch.Draw(spriteSheet, MapCollisionBox, Color.Black);
+            //spriteBatch.Draw(spriteSheet, MapCollisionBox, Color.Red); // Začasno, da se vidi collisionBox...
         }
     }
 }

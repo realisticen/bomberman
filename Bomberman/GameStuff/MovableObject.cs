@@ -16,11 +16,15 @@ namespace Bomberman.GameStuff
 
     class MovableObject
     {
-        public Vector2 Position, Acceleration;
+        public Vector2 Position, Acceleration, OldPosition;
         protected Vector2 velocity;
+        public Rectangle MapCollisionBox;
 
         public void UpdatePos()
         {
+            if(OldPosition != Position)
+                OldPosition = Position;
+
             velocity += Acceleration;
             Position += velocity;
             Acceleration.Y = 0;

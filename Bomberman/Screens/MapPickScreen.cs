@@ -39,6 +39,7 @@ namespace Bomberman.Screens
             map.tileHeight = 64;
             map.mapHeight = 12;
             map.mapWidth = 21;
+            map.SolidTiles = new short[] { 1, 2, 3 };
             map.MapLayout = new short[]
             {
                 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
