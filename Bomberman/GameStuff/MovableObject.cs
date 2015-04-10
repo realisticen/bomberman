@@ -20,6 +20,9 @@ namespace Bomberman.GameStuff
         protected Vector2 velocity;
         public Rectangle MapCollisionBox;
 
+        public int Width;
+        public int Height;
+
         public void UpdatePos()
         {
             if(OldPosition != Position)

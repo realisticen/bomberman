@@ -52,7 +52,7 @@ namespace Bomberman.GameStuff
         }
 
         private int startTileY, startTileX, endTileY, endTileX;
-        private const int offSet= 2;
+        private const int offSet= 0;
         public void Colides(MovableObject obj)
         {
             if (_solidTiles == null)
@@ -72,22 +72,28 @@ namespace Bomberman.GameStuff
                         collisionBox.X = j*tileWidth;
                         collisionBox.Y = i*tileHeight;
 
-                        if (!collisionBox.Intersects(obj.MapCollisionBox))
+                        if (!obj.MapCollisionBox.Intersects(collisionBox))
                             continue;
+
+                        //Todo: poprav kalkulacije
 
                         if (obj.OldPosition.X != obj.Position.X) // Če je pršu z leve/ desne
                         {
                             if (obj.OldPosition.X > obj.Position.X) // Če pride iz leve
-                                obj.Acceleration.X = obj.Acceleration.X + (j * tileWidth + tileWidth) - obj.MapCollisionBox.X + offSet;
+                                obj.Acceleration.X += (collisionBox.Right - obj.MapCollisionBox.X); //+ offSet;
+                            //    obj.Acceleration.X = obj.Acceleration.X + (j * tileWidth + tileWidth) - obj.MapCollisionBox.X + offSet;
                             else
-                                obj.Acceleration.X = obj.Acceleration.X - (obj.MapCollisionBox.Right - (j * tileWidth)) - offSet;
+                                obj.Acceleration.X -= ((obj.MapCollisionBox.Right) - collisionBox.X); //+ offSet);
+                            //obj.Acceleration.X = obj.Acceleration.X - (obj.MapCollisionBox.Right - (j * tileWidth)) - offSet;
                         }
-                        else
+                        else if (obj.OldPosition.Y != obj.Position.Y)
                         {
                             if (obj.OldPosition.Y > obj.Position.Y) // Če pride iz uspod
-                                obj.Acceleration.Y = obj.Acceleration.Y + (i * tileHeight + tileHeight) - obj.MapCollisionBox.Y + offSet;
+                                obj.Acceleration.Y += (collisionBox.Bottom - obj.MapCollisionBox.Y);
+                            //obj.Acceleration.Y = obj.Acceleration.Y + (i * tileHeight + tileHeight) - obj.MapCollisionBox.Y + offSet;
                             else
-                                obj.Acceleration.Y = obj.Acceleration.Y - (obj.MapCollisionBox.Bottom - (i * tileHeight)) - offSet;
+                                obj.Acceleration.Y -= (obj.MapCollisionBox.Bottom - collisionBox.Y);
+                            //    obj.Acceleration.Y = obj.Acceleration.Y - (obj.MapCollisionBox.Bottom - (i * tileHeight)) - offSet;
                         }
                         obj.UpdatePos();
                         return;
