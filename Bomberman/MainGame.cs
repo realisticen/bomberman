@@ -4,6 +4,7 @@ using Bomberman.Utilities.Examples.Classes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Storage;
 
 namespace Bomberman
 {
@@ -98,7 +99,6 @@ namespace Bomberman
                 Exit();
 
             screenManager.Update(gameTime);
-
             base.Update(gameTime);
         }
         /// <summary>

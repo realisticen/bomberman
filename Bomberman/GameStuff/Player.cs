@@ -40,7 +40,7 @@ namespace Bomberman.GameStuff
         public Player(Texture2D sprites, Color color)
         {
             spriteSheet = sprites;
-            speed = 10;
+            speed = 5;
             PlayerColor = color;
             Position = new Vector2(600,540);
 

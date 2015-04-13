@@ -20,13 +20,25 @@ namespace Bomberman.GameStuff
         protected Vector2 velocity;
         public Rectangle MapCollisionBox;
 
+        public bool Teleported = false;
+
         public int Width;
         public int Height;
+
+        private short counter = 0;
 
         public void UpdatePos()
         {
             if(OldPosition != Position)
                 OldPosition = Position;
+
+            if (Teleported)
+                counter++;
+            if (counter > 80)
+            {
+                counter = 0;
+                Teleported = false;
+            }
 
             velocity += Acceleration;
             Position += velocity;

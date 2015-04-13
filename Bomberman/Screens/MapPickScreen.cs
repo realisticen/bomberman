@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Bomberman.BaseClass;
@@ -9,6 +10,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Storage;
 using Newtonsoft.Json;
 
 namespace Bomberman.Screens
@@ -32,6 +34,7 @@ namespace Bomberman.Screens
         public override void LoadContent(ContentManager content)
         {
             this.content = content;
+
             Map map = new Map();
             //map.tileSet = content.Load<Texture2D>("Maps/tileset");
             map.tileSetPath = "Maps/tileset";
@@ -52,14 +55,20 @@ namespace Bomberman.Screens
                 1,0,0,0,0,0,0,2,0,0,0,2,0,0,0,0,0,0,0,0,1,
                 1,0,0,0,0,0,0,1,0,0,2,1,0,0,2,0,0,0,0,0,1,
                 1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-                1,0,0,0,0,0,0,1,2,2,2,1,0,0,0,0,0,0,0,0,1,
+                1,0,0,0,0,0,0,1,2,2,0,1,0,0,0,0,0,0,0,0,1,
                 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
             };
+            map.Portals = new Vector2[]
+            {
+                new Vector2(200, 120)
+            };
 
+            //Map map = JsonConvert.DeserializeObject<Map>(File.ReadAllText("Maps/test.map"));
 
             owner.ChangeScreen(new Player1Screen(owner, map));
 
             var json = JsonConvert.SerializeObject(map); // TODO: SHRAN KT JSON PA NALODI KT JSON...
+            File.WriteAllText("Maps/test.map", json);
         }
     }
 }
