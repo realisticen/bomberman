@@ -13,10 +13,18 @@ namespace Bomberman.GameStuff
         public Color PlayerColor;
         public Rectangle HitBox;
 
+        private int maxBombs = 1;
+        private int bombs = 0;
+
         private Texture2D spriteSheet;
         private Rectangle sourceRectangle, destinationRectangle;
         private Directons lastdDirecton;
         private float speed;
+
+        public void BombDestroyed()
+        {
+            bombs--;
+        }
 
         public void Move(Directons direction)
         {

@@ -17,6 +17,7 @@ namespace Bomberman.GameStuff
         public Vector2[] _portals;
         private short[] collisionMap;
 
+        public short[] Spawns;
         private Rectangle collisionBox;
         private Texture2D tileSet;
         public string tileSetPath;
@@ -46,6 +47,11 @@ namespace Bomberman.GameStuff
         {
             tileSet = content.Load<Texture2D>(tileSetPath);
             collisionBox = new Rectangle(0, 0, tileWidth, tileHeight);
+        }
+
+        public Vector2 GetSpawnLocation(int index)
+        {
+            return new Vector2(Spawns[index] % mapWidth * tileWidth, Spawns[index] / mapWidth * tileHeight);
         }
 
         public void UpdateCollisionArray()
