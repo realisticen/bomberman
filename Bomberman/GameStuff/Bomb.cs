@@ -14,9 +14,9 @@ namespace Bomberman.GameStuff
         private Texture2D spriteSheet;
         private Rectangle sourceRectangle, destinationRectangle;
 
-        private Player owner;
+        public Player Owner;
         public bool IsAlive = true;
-        private int life = 60;
+        private int life = 120;
         private float speed;
         public void Move(Directons direction)
         {
@@ -44,36 +44,43 @@ namespace Bomberman.GameStuff
             BombColor = Color.White;
             Position = position;
 
-            owner = _owner;
+            Owner = _owner;
             Width = 48;
             Height = 48;
+            Position.X -= Width / 2;
+            Position.Y -= Height / 2;            
             sourceRectangle = new Rectangle(0,0, Height, Width);
+            MapCollisionBox = new Rectangle((int)Position.X, (int)Position.Y, Height, Width);
         }
 
         public void Update()
         {
-            if (life < -100)
+            velocity *= 0;
+
+            if (life < 0)
             {
                 IsAlive = false;
-                owner.BombDestroyed();
+                Owner.BombDestroyed();
                 return;
             }
             life--;
+
             NextFrame();
             UpdatePos();
             MapCollisionBox = new Rectangle((int)Position.X, (int)Position.Y, Height, Width);
+            velocity *= 0;
+
         }
 
-
-        private bool update;
+        private int update;
         private void NextFrame()
         {
-            if (!update)
+            if (update != 20)
             {
-                update = true;
+                update++;
                 return;
             }
-            update = false;
+            update = 0;
 
             if(BombColor != Color.Red)
                 BombColor = Color.Red;
@@ -88,6 +95,8 @@ namespace Bomberman.GameStuff
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(spriteSheet, new Rectangle((int)Position.X, (int)Position.Y, Width, Height), sourceRectangle, BombColor);
+            //spriteBatch.Draw(spriteSheet, MapCollisionBox, Color.Red); // Začasno, da se vidi collisionBox...
+            
         }
     }
 }

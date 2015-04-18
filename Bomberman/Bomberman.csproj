@@ -42,6 +42,7 @@
     <Compile Include="BaseClass\Clickable.cs" />
     <Compile Include="BaseClass\Screen.cs" />
     <Compile Include="GameStuff\Bomb.cs" />
+    <Compile Include="GameStuff\Explosion.cs" />
     <Compile Include="GameStuff\Map.cs" />
     <Compile Include="GameStuff\MovableObject.cs" />
     <Compile Include="GameStuff\Player.cs" />

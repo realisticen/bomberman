@@ -14,7 +14,8 @@ namespace Bomberman.GameStuff
         public Rectangle HitBox;
 
         private int maxBombs = 1;
-        private int bombs = 0;
+        public int Bombs = 0;
+        public int BombSize = 1;
 
         private Texture2D spriteSheet;
         private Rectangle sourceRectangle, destinationRectangle;
@@ -23,7 +24,7 @@ namespace Bomberman.GameStuff
 
         public void BombDestroyed()
         {
-            bombs--;
+            Bombs--;
         }
 
         public void Move(Directons direction)
@@ -43,6 +44,15 @@ namespace Bomberman.GameStuff
                     Acceleration.X += speed;
                     break;
             }
+        }
+
+        public bool CanPlaceBomb()
+        {
+            return true;
+            // TODO: Tole uzgor je sm za testirane
+            if (Bombs < maxBombs)
+                return true;
+            return false;
         }
 
         public Player(Texture2D sprites, Color color)
@@ -78,7 +88,6 @@ namespace Bomberman.GameStuff
         {
             velocity *= 0;
             UpdatePos();
-            MapCollisionBox = new Rectangle((int)Position.X + 6, (int)Position.Y + 65, 36, 21);
             //MapCollisionBox = new Rectangle((int)Position.X + 12, (int)Position.Y + 65, 25, 21);
             if (velocity.Y < 0)
             {
@@ -140,13 +149,14 @@ namespace Bomberman.GameStuff
                 lastdDirecton = Directons.RIGHT;
             }
             HitBox = destinationRectangle;
+            MapCollisionBox = new Rectangle((int)Position.X + 6, (int)Position.Y + 65, 36, 21);
             velocity *= 0;
         }
 
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(spriteSheet, new Rectangle((int)Position.X, (int)Position.Y, 48, 86), sourceRectangle,PlayerColor);
+            spriteBatch.Draw(spriteSheet, new Rectangle((int)Position.X, (int)Position.Y, 48, 86), sourceRectangle, PlayerColor);
 
             //spriteBatch.Draw(spriteSheet, MapCollisionBox, Color.Red); // Začasno, da se vidi collisionBox...
         }

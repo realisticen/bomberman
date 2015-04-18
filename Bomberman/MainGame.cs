@@ -109,7 +109,7 @@ namespace Bomberman
         {
             cam.SetupVirtualScreenViewport();
             cam.Draw();
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.Default, RasterizerState.CullNone, null, cam.GetTransformationMatrix());
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.LinearWrap, DepthStencilState.Default, RasterizerState.CullNone, null, cam.GetTransformationMatrix());
             screenManager.Draw(spriteBatch);
             spriteBatch.End();
             base.Draw(gameTime);

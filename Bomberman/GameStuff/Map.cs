@@ -54,6 +54,72 @@ namespace Bomberman.GameStuff
             return new Vector2(Spawns[index] % mapWidth * tileWidth, Spawns[index] / mapWidth * tileHeight);
         }
 
+        public Tuple<Rectangle, Rectangle> MakeExplosion(Bomb bomb)
+        {
+            int centerTileX = (int)bomb.Position.X / tileWidth;
+            int centerTileY = (int)bomb.Position.Y / tileHeight;
+
+            Rectangle hExpl = new Rectangle(centerTileX * tileWidth, centerTileY * tileHeight, tileWidth, tileHeight);
+            Rectangle vExpl = new Rectangle(centerTileX * tileWidth, centerTileY * tileHeight, tileWidth, tileHeight);
+
+            for (int i = 1; i < bomb.Owner.BombSize + 1; i++) // Odstran uzničlive bloke
+            {
+                if (centerTileX + (mapWidth * centerTileY) - i > -1) // Levo
+                    if (_mapLayout[centerTileX + (mapWidth * centerTileY) - i] == 2)
+                        _mapLayout[centerTileX + (mapWidth * centerTileY) - i] = 0;
+
+                if (centerTileX + (mapWidth * centerTileY) + i < _mapLayout.Length) // Desmo
+                    if (_mapLayout[centerTileX + (mapWidth * centerTileY) + i] == 2)
+                        _mapLayout[centerTileX + (mapWidth * centerTileY) + i] = 0;
+
+                if (centerTileX + (mapWidth * (centerTileY + i)) < _mapLayout.Length) // Dol
+                    if (_mapLayout[centerTileX + (mapWidth * (centerTileY + i))] == 2)
+                        _mapLayout[centerTileX + (mapWidth * (centerTileY + i))] = 0;
+                if (centerTileX + (mapWidth * (centerTileY - i)) > -1) //Gor
+                    if (_mapLayout[centerTileX + (mapWidth * (centerTileY - i))] == 2)
+                        _mapLayout[centerTileX + (mapWidth * (centerTileY - i))] = 0;
+                
+                UpdateCollisionArray();
+            }
+
+
+            //TODO: UNIČ UNIČLIVE...
+            for (int i = 1; i < bomb.Owner.BombSize + 1; i++) // Levo
+            {
+                if(collisionMap[(centerTileX + (mapWidth * centerTileY)) - i] != 0)
+                    break;
+
+                hExpl.X -= tileWidth;
+                hExpl.Width += tileWidth;
+            }
+
+            for (int i = 1; i < bomb.Owner.BombSize + 1; i++) // desno
+            {
+                if (collisionMap[centerTileX + (mapWidth * centerTileY) + i] != 0)
+                    break;
+
+                hExpl.Width += tileWidth;
+            }
+
+            for (int i = 1; i < bomb.Owner.BombSize + 1; i++) // gor
+            {
+                if (collisionMap[centerTileX + (mapWidth * (centerTileY - i))] != 0)
+                    break;
+
+                vExpl.Y -= tileHeight;
+                vExpl.Height += tileHeight;
+            }
+            for (int i = 1; i < bomb.Owner.BombSize + 1; i++) //dol
+            {
+                if (collisionMap[centerTileX + (mapWidth * (centerTileY + i))] != 0)
+                    break;
+
+                vExpl.Height += tileHeight;
+            }
+
+            return Tuple.Create(vExpl, hExpl);
+        }
+
         public void UpdateCollisionArray()
         {
             if(_solidTiles == null || _mapLayout == null)
@@ -155,7 +221,7 @@ namespace Bomberman.GameStuff
                             //obj.Acceleration.Y += (obj.MapCollisionBox.Y > collisionBox.Y) ? (collisionBox.Center.Y - obj.MapCollisionBox.Y) : (collisionBox.Center.Y - obj.MapCollisionBox.Y);
 
                             obj.Acceleration.X += (collisionBox.X - obj.MapCollisionBox.X) + ((collisionBox.Width / 2) - (obj.MapCollisionBox.Width / 2));
-                            obj.Acceleration.Y += (collisionBox.Center.Y - obj.MapCollisionBox.Y) + ((collisionBox.Height /2) - (obj.Height/ 2));
+                            obj.Acceleration.Y += (collisionBox.Y - obj.MapCollisionBox.Y) + ((collisionBox.Height / 2) - (obj.MapCollisionBox.Height / 2));
 
                             obj.UpdatePos();
                             obj.Teleported = true;
@@ -165,6 +231,14 @@ namespace Bomberman.GameStuff
                 } // 2 for zanka
             } // 1. for zanka
     
+        }
+
+        public Vector2 GetTileCenter(Vector2 pos)
+        {
+            int x = (int)(pos.X / tileWidth);
+            int y = (int)(pos.Y / tileHeight);
+
+            return new Vector2((x * tileWidth) + (tileWidth / 2), (y * tileHeight) + (tileHeight / 2));
         }
 
         public void Draw(SpriteBatch spriteBatch)

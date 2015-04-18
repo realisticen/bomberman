@@ -17,7 +17,10 @@ namespace Bomberman.Screens
         private Player player;
         private Map map;
         private Texture2D bombTexture;
-        private List<Bomb> bombs = new List<Bomb>(); 
+        private Texture2D explosionSheet;
+        private List<Bomb> bombs = new List<Bomb>();
+        public List<Explosion> explosions = new List<Explosion>(); 
+
 
         public Player1Screen(ScreenManager owner, Map _map) : base(owner)
         {
@@ -27,11 +30,9 @@ namespace Bomberman.Screens
         public override void Draw(SpriteBatch spriteBatch)
         {
             map.Draw(spriteBatch);
+            bombs.ForEach(bomb => bomb.Draw(spriteBatch));
             player.Draw(spriteBatch);
-            foreach (var bomb in bombs)
-            {
-                bomb.Draw(spriteBatch);
-            }
+            explosions.ForEach(explosion => explosion.Draw(spriteBatch));
         }
 
         private KeyboardState state;
@@ -52,10 +53,28 @@ namespace Bomberman.Screens
 
             if (state.IsKeyDown(Keys.Space))
             {
-                bombs.Add(new Bomb(bombTexture, player.Position, player));
+                if (player.CanPlaceBomb())
+                {
+                    bombs.Add(new Bomb(bombTexture, map.GetTileCenter(player.MapCollisionBox.Center.ToVector2()), player));
+                    player.Bombs++;
+                }
             }
+
             bombs.ForEach(bomb => bomb.Update());
+            explosions.ForEach(explosion => explosion.Update());
+
+            bombs.ForEach(delegate(Bomb bomb)
+            {
+                if (bomb.IsAlive) return;
+
+                var rexts = map.MakeExplosion(bomb);
+                explosions.Add(new Explosion(rexts.Item1, rexts.Item2, explosionSheet)); 
+            });
+            
             bombs.RemoveAll(bomb => bomb.IsAlive == false);
+            explosions.RemoveAll(explosion => explosion.isAlive == false);
+
+            bombs.ForEach(bomb => map.Colides(bomb));
         }
 
         public override void LoadContent(ContentManager content)
@@ -63,7 +82,8 @@ namespace Bomberman.Screens
             this.content = content;
             player = new Player(content.Load<Texture2D>("Game/player"), Color.White);
             bombTexture = content.Load<Texture2D>("Game/bomb");
-
+            explosionSheet = content.Load<Texture2D>("Game/explosion");
+            
             player.Position = map.GetSpawnLocation(0);
             player.Position.Y -= player.Height / 2;
             player.Position.X += player.Width / 4 - 4;
