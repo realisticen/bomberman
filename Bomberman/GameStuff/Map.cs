@@ -241,22 +241,27 @@ namespace Bomberman.GameStuff
             return new Vector2((x * tileWidth) + (tileWidth / 2), (y * tileHeight) + (tileHeight / 2));
         }
 
+        private float rotation = 0;
         public void Draw(SpriteBatch spriteBatch)
         {
             for (int i = 0; i < mapHeight; i++)
             {
                 for (int j = 0; j < mapWidth; j++)
                 {
+                    rotation += 0.0001f; 
                     if (_mapLayout[i*mapWidth + j] == 3)
-                        spriteBatch.Draw(tileSet,
-                            new Rectangle(j*tileWidth, i*tileHeight, tileWidth, tileHeight),
-                            new Rectangle(0, 0, tileWidth, tileHeight),
-                            Color.White);
+                    {
+                        spriteBatch.Draw(tileSet, new Rectangle(j * tileWidth, i * tileHeight, tileWidth, tileHeight), new Rectangle(0, 0, tileWidth, tileHeight), Color.White);
 
-                    spriteBatch.Draw(tileSet,
-                                                new Rectangle(j * tileWidth, i * tileHeight, tileWidth, tileHeight),
-                                                new Rectangle(tileWidth * _mapLayout[i * mapWidth + j], 0, tileWidth, tileHeight),
-                                                Color.White);
+                        if (rotation < 0)
+                            rotation = 0;
+
+                        spriteBatch.Draw(tileSet, new Rectangle(j * tileWidth + 32, i * tileHeight + 32, tileWidth, tileHeight), new Rectangle(tileWidth * _mapLayout[i * mapWidth + j], 0, tileWidth, tileHeight), Color.White,
+                            rotation, new Vector2(32, 32), SpriteEffects.None, 1);
+                        continue;
+                    }
+
+                    spriteBatch.Draw(tileSet, new Rectangle(j * tileWidth, i * tileHeight, tileWidth, tileHeight), new Rectangle(tileWidth * _mapLayout[i * mapWidth + j], 0, tileWidth, tileHeight), Color.White);
                 }
             }
         }

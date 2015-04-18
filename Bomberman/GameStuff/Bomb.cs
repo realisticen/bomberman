@@ -15,7 +15,7 @@ namespace Bomberman.GameStuff
         private Rectangle sourceRectangle, destinationRectangle;
 
         public Player Owner;
-        public bool IsAlive = true;
+        public bool IsAlive = true, IsSloid = false;
         private int life = 120;
         private float speed;
         public void Move(Directons direction)
