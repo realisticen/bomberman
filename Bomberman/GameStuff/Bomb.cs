@@ -15,7 +15,7 @@ namespace Bomberman.GameStuff
         private Rectangle sourceRectangle, destinationRectangle;
 
         public Player Owner;
-        public bool IsAlive = true, IsSloid = false;
+        public bool IsAlive = true, IsSolid = false;
         private int life = 120;
         private float speed;
         public void Move(Directons direction)
@@ -48,9 +48,9 @@ namespace Bomberman.GameStuff
             Width = 48;
             Height = 48;
             Position.X -= Width / 2;
-            Position.Y -= Height / 2;            
-            sourceRectangle = new Rectangle(0,0, Height, Width);
-            MapCollisionBox = new Rectangle((int)Position.X, (int)Position.Y, Height, Width);
+            Position.Y -= Height / 2;
+            sourceRectangle = new Rectangle(0, 0, Width, Height);
+            MapCollisionBox = new Rectangle((int)Position.X, (int)Position.Y, Width, Height);
         }
 
         public void Update()
@@ -67,7 +67,7 @@ namespace Bomberman.GameStuff
 
             NextFrame();
             UpdatePos();
-            MapCollisionBox = new Rectangle((int)Position.X, (int)Position.Y, Height, Width);
+            MapCollisionBox = new Rectangle((int)Position.X, (int)Position.Y, Width, Height);
             velocity *= 0;
 
         }
@@ -86,10 +86,6 @@ namespace Bomberman.GameStuff
                 BombColor = Color.Red;
             else
                 BombColor = Color.White;
-            //if (sourceRectangle.X + Width >= spriteSheet.Width)
-            //    sourceRectangle.X = 0;
-            //else
-            //    sourceRectangle.X += Width;
         }
 
         public void Draw(SpriteBatch spriteBatch)

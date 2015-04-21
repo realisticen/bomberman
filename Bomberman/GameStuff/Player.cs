@@ -21,6 +21,7 @@ namespace Bomberman.GameStuff
         private Rectangle sourceRectangle, destinationRectangle;
         private Directons lastdDirecton;
         private float speed;
+        private int ticks = 0;
 
         public void BombDestroyed()
         {
@@ -48,17 +49,38 @@ namespace Bomberman.GameStuff
 
         public bool CanPlaceBomb()
         {
-            return true;
-            // TODO: Tole uzgor je sm za testirane
-            if (Bombs < maxBombs)
+            if (Bombs < maxBombs && ticks > 26)
+            {
+                ticks = 0;
                 return true;
+            }
             return false;
+        }
+
+        private const float maxSpeed = 6;
+        public void IncreaseSpeed(float _speed)
+        {
+            if (speed >= maxSpeed) return;
+
+            speed += _speed;
+            if (speed > maxSpeed)
+                speed = maxSpeed;
+        }
+
+        public void IncReaseBombSize(int size)
+        {
+            BombSize += size;
+        }
+
+        public void IncreaseMaxBombs(int amount)
+        {
+            maxBombs += amount;
         }
 
         public Player(Texture2D sprites, Color color)
         {
             spriteSheet = sprites;
-            speed = 5;
+            speed = 3;
             PlayerColor = color;
             Position = new Vector2(600,540);
 
@@ -86,6 +108,7 @@ namespace Bomberman.GameStuff
 
         public void Update()
         {
+            ticks++;
             velocity *= 0;
             UpdatePos();
             //MapCollisionBox = new Rectangle((int)Position.X + 12, (int)Position.Y + 65, 25, 21);
@@ -150,6 +173,7 @@ namespace Bomberman.GameStuff
             }
             HitBox = destinationRectangle;
             MapCollisionBox = new Rectangle((int)Position.X + 6, (int)Position.Y + 65, 36, 21);
+            HitBox = new Rectangle((int)Position.X, (int)Position.Y, Width, Height);
             velocity *= 0;
         }
 

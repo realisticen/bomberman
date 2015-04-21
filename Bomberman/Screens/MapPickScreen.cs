@@ -38,6 +38,7 @@ namespace Bomberman.Screens
             Map map = new Map();
             //map.tileSet = content.Load<Texture2D>("Maps/tileset");
             map.tileSetPath = "Maps/tileset";
+            map.powerSheetPath = "Maps/powers";
             map.tileWidth = 64;
             map.tileHeight = 64;
             map.mapHeight = 12;

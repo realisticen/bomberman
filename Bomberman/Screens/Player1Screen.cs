@@ -21,7 +21,6 @@ namespace Bomberman.Screens
         private List<Bomb> bombs = new List<Bomb>();
         public List<Explosion> explosions = new List<Explosion>(); 
 
-
         public Player1Screen(ScreenManager owner, Map _map) : base(owner)
         {
             map = _map;
@@ -75,6 +74,41 @@ namespace Bomberman.Screens
             explosions.RemoveAll(explosion => explosion.isAlive == false);
 
             bombs.ForEach(bomb => map.Colides(bomb));
+            foreach (var bomb in bombs)
+            {
+                if (bomb.MapCollisionBox.Intersects(player.MapCollisionBox))
+                {
+                    if (bomb.IsSolid && !player.Teleported)
+                    {
+                        if (player.OldPosition.X != player.Position.X) // Če je pršu z leve/ desne
+                        {
+                            if (player.OldPosition.X > player.Position.X) // Če pride iz leve
+                                player.Acceleration.X += (bomb.MapCollisionBox.Right - player.MapCollisionBox.X); //+ offSet;
+                            else
+                                player.Acceleration.X -= ((player.MapCollisionBox.Right) - bomb.MapCollisionBox.X); //+ offSet);
+                        }
+                        else if (player.OldPosition.Y != player.Position.Y)
+                        {
+                            if (player.OldPosition.Y > player.Position.Y) // Če pride iz uspod
+                                player.Acceleration.Y += (bomb.MapCollisionBox.Bottom - player.MapCollisionBox.Y);
+                            else
+                                player.Acceleration.Y -= (player.MapCollisionBox.Bottom - bomb.MapCollisionBox.Y);
+                        }
+                        player.UpdatePos();
+                        break;
+                    }
+                }
+                else
+                    bomb.IsSolid = true;
+            }
+
+            foreach (var explosion in explosions)
+            {
+                if(explosion.Collides(player.HitBox))
+                    player.PlayerColor = Color.Red;
+            }
+
+            map.CheckPowers(player);
         }
 
         public override void LoadContent(ContentManager content)

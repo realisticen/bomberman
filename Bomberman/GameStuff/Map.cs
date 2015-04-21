@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -9,9 +10,30 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Bomberman.GameStuff
 {
 
+    class PowerUps
+    {
+        public enum PowerUp
+        {
+            Speed,
+            BombAmount,
+            ExplosionSize
+        }
+
+        public PowerUps(PowerUp power, Vector2 pos)
+        {
+            Power = power;
+            Hitbox = new Rectangle((int)pos.X, (int)pos.Y, 32, 32);
+            drawRect = new Rectangle(32 * (int)power, 0 , 32, 32);
+        }
+
+        public PowerUp Power;
+        public Rectangle Hitbox, drawRect;
+    }
+
     class Map
     {
-        // TODO: SPAWN
+        private List<PowerUps> powers = new List<PowerUps>();
+
         public short[] _mapLayout;
         public short[] _solidTiles;
         public Vector2[] _portals;
@@ -19,8 +41,8 @@ namespace Bomberman.GameStuff
 
         public short[] Spawns;
         private Rectangle collisionBox;
-        private Texture2D tileSet;
-        public string tileSetPath;
+        private Texture2D tileSet, powerSheet;
+        public string tileSetPath, powerSheetPath;
         public short tileWidth, tileHeight, mapWidth, mapHeight;
 
         public short[] MapLayout
@@ -46,6 +68,7 @@ namespace Bomberman.GameStuff
         public void LoadTileSet(ContentManager content)
         {
             tileSet = content.Load<Texture2D>(tileSetPath);
+            powerSheet = content.Load<Texture2D>(powerSheetPath);
             collisionBox = new Rectangle(0, 0, tileWidth, tileHeight);
         }
 
@@ -54,36 +77,87 @@ namespace Bomberman.GameStuff
             return new Vector2(Spawns[index] % mapWidth * tileWidth, Spawns[index] / mapWidth * tileHeight);
         }
 
+        Random r = new Random(Guid.NewGuid().GetHashCode());
+        private void MakePower(int index)
+        {
+            //if (r.Next(2) == 1)
+            //    return;
+
+            Vector2 pos = new Vector2((index % mapWidth) * tileWidth + 16, (index / mapWidth) * tileHeight + 16);
+            powers.Add(new PowerUps((PowerUps.PowerUp)r.Next(0 ,3), pos));
+        }
+
+        public void CheckPowers(Player player)
+        {
+            for (int i = 0; i < powers.Count; i++)
+            {
+                if (player.MapCollisionBox.Intersects(powers[i].Hitbox))
+                {
+                    switch (powers[i].Power)
+                    {
+                        case PowerUps.PowerUp.Speed:
+                            player.IncreaseSpeed(1);
+                            break;
+                        case PowerUps.PowerUp.BombAmount:
+                            player.IncreaseMaxBombs(1);
+                            break;
+                        case PowerUps.PowerUp.ExplosionSize:
+                            player.IncReaseBombSize(1);
+                            break;
+                    }
+                    powers.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
+
+        private bool left, right, down, up;
         public Tuple<Rectangle, Rectangle> MakeExplosion(Bomb bomb)
         {
             int centerTileX = (int)bomb.Position.X / tileWidth;
             int centerTileY = (int)bomb.Position.Y / tileHeight;
+
+            left = right = down = up = true;
 
             Rectangle hExpl = new Rectangle(centerTileX * tileWidth, centerTileY * tileHeight, tileWidth, tileHeight);
             Rectangle vExpl = new Rectangle(centerTileX * tileWidth, centerTileY * tileHeight, tileWidth, tileHeight);
 
             for (int i = 1; i < bomb.Owner.BombSize + 1; i++) // Odstran uzničlive bloke
             {
-                if (centerTileX + (mapWidth * centerTileY) - i > -1) // Levo
-                    if (_mapLayout[centerTileX + (mapWidth * centerTileY) - i] == 2)
+                if (left && centerTileX + (mapWidth * centerTileY) - i > -1) // Levo
+                    if (_mapLayout[centerTileX + (mapWidth*centerTileY) - i] == 2)
+                    {
+                        left = false;
                         _mapLayout[centerTileX + (mapWidth * centerTileY) - i] = 0;
+                        MakePower(centerTileX + (mapWidth * centerTileY) - i);                 
+                    }
 
-                if (centerTileX + (mapWidth * centerTileY) + i < _mapLayout.Length) // Desmo
+                if (right && centerTileX + (mapWidth * centerTileY) + i < _mapLayout.Length) // Desmo
                     if (_mapLayout[centerTileX + (mapWidth * centerTileY) + i] == 2)
+                    {
+                        right = false;
                         _mapLayout[centerTileX + (mapWidth * centerTileY) + i] = 0;
+                        MakePower(centerTileX + (mapWidth * centerTileY) + i);                    
+                    }
 
-                if (centerTileX + (mapWidth * (centerTileY + i)) < _mapLayout.Length) // Dol
+                if (down && centerTileX + (mapWidth * (centerTileY + i)) < _mapLayout.Length) // Dol
                     if (_mapLayout[centerTileX + (mapWidth * (centerTileY + i))] == 2)
+                    {
+                        down = false;
                         _mapLayout[centerTileX + (mapWidth * (centerTileY + i))] = 0;
-                if (centerTileX + (mapWidth * (centerTileY - i)) > -1) //Gor
+                        MakePower(centerTileX + (mapWidth * (centerTileY + i)));
+                    }
+
+                if (up && centerTileX + (mapWidth * (centerTileY - i)) > -1) //Gor
                     if (_mapLayout[centerTileX + (mapWidth * (centerTileY - i))] == 2)
+                    {
+                        up = false;
                         _mapLayout[centerTileX + (mapWidth * (centerTileY - i))] = 0;
-                
-                UpdateCollisionArray();
+                        MakePower(centerTileX + (mapWidth * (centerTileY - i)));
+                    }
             }
+            UpdateCollisionArray();
 
-
-            //TODO: UNIČ UNIČLIVE...
             for (int i = 1; i < bomb.Owner.BombSize + 1; i++) // Levo
             {
                 if(collisionMap[(centerTileX + (mapWidth * centerTileY)) - i] != 0)
@@ -263,6 +337,10 @@ namespace Bomberman.GameStuff
 
                     spriteBatch.Draw(tileSet, new Rectangle(j * tileWidth, i * tileHeight, tileWidth, tileHeight), new Rectangle(tileWidth * _mapLayout[i * mapWidth + j], 0, tileWidth, tileHeight), Color.White);
                 }
+            }
+            foreach (var power in powers)
+            {
+                spriteBatch.Draw(powerSheet, power.Hitbox, power.drawRect, Color.White);
             }
         }
     }
