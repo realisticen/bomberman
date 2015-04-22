@@ -80,8 +80,8 @@ namespace Bomberman.GameStuff
         Random r = new Random(Guid.NewGuid().GetHashCode());
         private void MakePower(int index)
         {
-            //if (r.Next(2) == 1)
-            //    return;
+            if (r.Next(2) == 1)
+                return;
 
             Vector2 pos = new Vector2((index % mapWidth) * tileWidth + 16, (index / mapWidth) * tileHeight + 16);
             powers.Add(new PowerUps((PowerUps.PowerUp)r.Next(0 ,3), pos));
@@ -208,12 +208,12 @@ namespace Bomberman.GameStuff
 
             if (Portals == null)
                 return;
-            for (short i = 0; i < Portals.Length; i+=2)
+            for (short i = 0; i < Portals.Length; i++)
             {
                 _mapLayout[(int)Portals[i].X] = 3;
                 _mapLayout[(int)Portals[i].Y] = 3;
-                collisionMap[(int)Portals[i].X] = (short)(i + 2);
-                collisionMap[(int)Portals[i].Y] = (short)(i + 2);
+                collisionMap[(int)Portals[i].X] = (short)(i + SolidTiles.Length);
+                collisionMap[(int)Portals[i].Y] = (short)(i + SolidTiles.Length);
             }
         }
 

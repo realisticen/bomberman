@@ -61,7 +61,8 @@ namespace Bomberman.Screens
             };
             map.Portals = new Vector2[]
             {
-                new Vector2(200, 120)
+                new Vector2(200, 120),
+                new Vector2(170, 110)
             };
             map.Spawns = new short[] {22};
 

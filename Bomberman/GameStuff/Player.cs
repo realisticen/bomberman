@@ -173,7 +173,8 @@ namespace Bomberman.GameStuff
             }
             HitBox = destinationRectangle;
             MapCollisionBox = new Rectangle((int)Position.X + 6, (int)Position.Y + 65, 36, 21);
-            HitBox = new Rectangle((int)Position.X, (int)Position.Y, Width, Height);
+            HitBox = MapCollisionBox;
+            //HitBox = new Rectangle((int)Position.X, (int)Position.Y, Width, Height);
             velocity *= 0;
         }
 
