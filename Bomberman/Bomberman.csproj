@@ -40,11 +40,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="BaseClass\Clickable.cs" />
+    <Compile Include="BaseClass\MovableObject.cs" />
     <Compile Include="BaseClass\Screen.cs" />
     <Compile Include="GameStuff\Bomb.cs" />
     <Compile Include="GameStuff\Explosion.cs" />
     <Compile Include="GameStuff\Map.cs" />
-    <Compile Include="GameStuff\MovableObject.cs" />
+    <Compile Include="GameStuff\Monster.cs" />
     <Compile Include="GameStuff\Player.cs" />
     <Compile Include="MainGame.cs" />
     <Compile Include="Program.cs" />
@@ -85,10 +86,10 @@
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <MonoGameContentReference Include="Content\Content.mgcb" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
   <!-- Specify the search path explicitly so the ResolveAssemblyReferences task picks the right ones -->
   <Target Name="BeforeResolveReferences">

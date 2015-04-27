@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
-namespace Bomberman.GameStuff
+namespace Bomberman.BaseClass
 {
     enum Directons
     {
+        STOP,
         UP,
         DOWN,
         LEFT,

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Text;
 using Bomberman.BaseClass;
 using Microsoft.Xna.Framework;
@@ -9,34 +8,30 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Bomberman.GameStuff
 {
-    class Player : MovableObject
+    class Monster : MovableObject
     {
-        public Color PlayerColor;
         public Rectangle HitBox;
 
-        private int maxBombs = 1;
-        public int Bombs = 0;
-        public int BombSize = 1;
-
+        private Vector2 uPos;
         private Texture2D spriteSheet;
         private Rectangle sourceRectangle, destinationRectangle;
-        private Directons lastdDirecton;
+        private Directons lastdDirecton, direction;
         private float speed;
-        private int ticks = 0;
 
-        public void BombDestroyed()
-        {
-            Bombs--;
-        }
 
         public void Move(Directons direction)
         {
+            Acceleration *= 0;
             switch (direction)
             {
                 case Directons.UP:
+                    if(this.direction == Directons.RIGHT)
+                        Position.X -= 10;
                     Acceleration.Y -= speed;
                     break;
                 case Directons.DOWN:
+                    if (this.direction == Directons.RIGHT)
+                        Position.X -= 10;
                     Acceleration.Y += speed;
                     break;
                 case Directons.LEFT:
@@ -46,48 +41,18 @@ namespace Bomberman.GameStuff
                     Acceleration.X += speed;
                     break;
             }
+            this.direction = direction;
         }
 
-        public bool CanPlaceBomb()
-        {
-            if (Bombs < maxBombs && ticks > 26)
-            {
-                ticks = 0;
-                return true;
-            }
-            return false;
-        }
-
-        private const float maxSpeed = 6;
-        public void IncreaseSpeed(float _speed)
-        {
-            if (speed >= maxSpeed) return;
-
-            speed += _speed;
-            if (speed > maxSpeed)
-                speed = maxSpeed;
-        }
-
-        public void IncReaseBombSize(int size)
-        {
-            BombSize += size;
-        }
-
-        public void IncreaseMaxBombs(int amount)
-        {
-            maxBombs += amount;
-        }
-
-        public Player(Texture2D sprites, Color color)
+        public Monster(Texture2D sprites)
         {
             spriteSheet = sprites;
-            speed = 3;
-            PlayerColor = color;
+            speed = 2;
+            Position = new Vector2(600,540);
 
-            Width = 48;
-            Height = 86;
-            sourceRectangle = new Rectangle(0,0,48,86);
-            //MapCollisionBox = new Rectangle((int)Position.X, (int)Position.Y + 56, 30, 20);
+            Width = 49;
+            Height = 49;
+            sourceRectangle = new Rectangle(0, 0, Width, Height);
         }
 
         private bool update;
@@ -99,19 +64,30 @@ namespace Bomberman.GameStuff
                 return;
             }
             update = false;
-
-            if (sourceRectangle.X + 48 >= spriteSheet.Width)
-                sourceRectangle.X = 0;
+            if(lastdDirecton == Directons.UP || lastdDirecton == Directons.DOWN)
+            {
+                if (sourceRectangle.X + Width >= spriteSheet.Width)
+                    sourceRectangle.X = 0;
+                sourceRectangle.X += 49;
+            }
             else
-                sourceRectangle.X += 48;
+            {
+                if (sourceRectangle.X + Width > 274)
+                    sourceRectangle.X = 0;
+                sourceRectangle.X += 39;
+            }
         }
 
         public void Update()
         {
-            ticks++;
             velocity *= 0;
+            if(uPos != Position)
+                Move((Directons)MainGame.random.Next(1, 5));
+            else
+                Move(direction);
+
             UpdatePos();
-            //MapCollisionBox = new Rectangle((int)Position.X + 12, (int)Position.Y + 65, 25, 21);
+            uPos = Position;
             if (velocity.Y < 0)
             {
                 if (lastdDirecton == Directons.UP)
@@ -121,7 +97,8 @@ namespace Bomberman.GameStuff
                 else
                 {
                     sourceRectangle.X = 0;
-                    sourceRectangle.Y = 0;
+                    sourceRectangle.Width = 49;
+                    sourceRectangle.Y = 49;
                 }
 
                 lastdDirecton = Directons.UP;
@@ -135,8 +112,9 @@ namespace Bomberman.GameStuff
                 }
                 else
                 {
+                    sourceRectangle.Width = 49;
                     sourceRectangle.X = 0;
-                    sourceRectangle.Y = 86;
+                    sourceRectangle.Y = 0;
                 }
 
                 lastdDirecton = Directons.DOWN;
@@ -150,8 +128,9 @@ namespace Bomberman.GameStuff
                 }
                 else
                 {
+                    sourceRectangle.Width = 39;
                     sourceRectangle.X = 0;
-                    sourceRectangle.Y = 258;
+                    sourceRectangle.Y = 146;
                 }
 
                 lastdDirecton = Directons.LEFT;
@@ -165,28 +144,25 @@ namespace Bomberman.GameStuff
                 }
                 else
                 {
+                    sourceRectangle.Width = 39;
                     sourceRectangle.X = 0;
-                    sourceRectangle.Y = 172;
+                    sourceRectangle.Y = 98;
                 }
 
                 lastdDirecton = Directons.RIGHT;
             }
             HitBox = destinationRectangle;
-            MapCollisionBox = new Rectangle((int)Position.X + 6, (int)Position.Y + 65, 36, 21);
+            //MapCollisionBox = new Rectangle((int)Position.X + 6, (int)Position.Y + 65, 36, 21);
+            MapCollisionBox = new Rectangle((int)Position.X, (int)Position.Y, sourceRectangle.Width, Height);
             HitBox = MapCollisionBox;
-            //HitBox = new Rectangle((int)Position.X, (int)Position.Y, Width, Height);
             velocity *= 0;
-        }
 
-        public void Kill()
-        {
-            PlayerColor = Color.Red;
         }
 
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(spriteSheet, new Rectangle((int)Position.X, (int)Position.Y, 48, 86), sourceRectangle, PlayerColor);
+            spriteBatch.Draw(spriteSheet, new Rectangle((int)Position.X, (int)Position.Y, sourceRectangle.Width, Height), sourceRectangle, Color.White);
 
             //spriteBatch.Draw(spriteSheet, MapCollisionBox, Color.Red); // Začasno, da se vidi collisionBox...
         }

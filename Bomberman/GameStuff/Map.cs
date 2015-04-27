@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security;
 using System.Text;
+using Bomberman.BaseClass;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -77,14 +78,31 @@ namespace Bomberman.GameStuff
             return new Vector2(Spawns[index] % mapWidth * tileWidth, Spawns[index] / mapWidth * tileHeight);
         }
 
-        Random r = new Random(Guid.NewGuid().GetHashCode());
+        public List<Monster> GetMonsters(Texture2D sheet)
+        {
+            if (Spawns.Length < 2)
+                return null;
+            var tmp = new List<Monster>(Spawns.Length - 2);
+            for (int i = 0; i < tmp.Capacity; i++)
+            {
+                tmp.Add(new Monster(sheet));
+                tmp[i].Position = GetSpawnLocation(i + 2);
+                tmp[i].Position.X +=  tileWidth / 2- tmp[i].Width/2;
+                //tmp[i].Position.Y -=  tileHeight / 2 - tmp[i].Height / 2;
+                tmp[i].Move((Directons)MainGame.random.Next(1, 5));
+
+            }
+
+            return tmp;
+        }
+
         private void MakePower(int index)
         {
-            if (r.Next(2) == 1)
+            if (MainGame.random.Next(2) == 1)
                 return;
 
             Vector2 pos = new Vector2((index % mapWidth) * tileWidth + 16, (index / mapWidth) * tileHeight + 16);
-            powers.Add(new PowerUps((PowerUps.PowerUp)r.Next(0 ,3), pos));
+            powers.Add(new PowerUps((PowerUps.PowerUp)MainGame.random.Next(0, 3), pos));
         }
 
         public void CheckPowers(Player player)
@@ -129,16 +147,20 @@ namespace Bomberman.GameStuff
                     {
                         left = false;
                         _mapLayout[centerTileX + (mapWidth * centerTileY) - i] = 0;
-                        MakePower(centerTileX + (mapWidth * centerTileY) - i);                 
+                        MakePower(centerTileX + (mapWidth * centerTileY) - i);
                     }
+                    else if (_mapLayout[centerTileX + (mapWidth * centerTileY) - i] == 1)
+                        left = false;
 
                 if (right && centerTileX + (mapWidth * centerTileY) + i < _mapLayout.Length) // Desmo
                     if (_mapLayout[centerTileX + (mapWidth * centerTileY) + i] == 2)
                     {
                         right = false;
                         _mapLayout[centerTileX + (mapWidth * centerTileY) + i] = 0;
-                        MakePower(centerTileX + (mapWidth * centerTileY) + i);                    
+                        MakePower(centerTileX + (mapWidth * centerTileY) + i);
                     }
+                    else if (_mapLayout[centerTileX + (mapWidth * centerTileY) + i] == 1)
+                        right = false;
 
                 if (down && centerTileX + (mapWidth * (centerTileY + i)) < _mapLayout.Length) // Dol
                     if (_mapLayout[centerTileX + (mapWidth * (centerTileY + i))] == 2)
@@ -147,6 +169,8 @@ namespace Bomberman.GameStuff
                         _mapLayout[centerTileX + (mapWidth * (centerTileY + i))] = 0;
                         MakePower(centerTileX + (mapWidth * (centerTileY + i)));
                     }
+                    else if (_mapLayout[centerTileX + (mapWidth * (centerTileY + i))] == 1)
+                        down = false;
 
                 if (up && centerTileX + (mapWidth * (centerTileY - i)) > -1) //Gor
                     if (_mapLayout[centerTileX + (mapWidth * (centerTileY - i))] == 2)
@@ -155,6 +179,8 @@ namespace Bomberman.GameStuff
                         _mapLayout[centerTileX + (mapWidth * (centerTileY - i))] = 0;
                         MakePower(centerTileX + (mapWidth * (centerTileY - i)));
                     }
+                    else if (_mapLayout[centerTileX + (mapWidth * (centerTileY - i))] == 1)
+                        up = false;
             }
             UpdateCollisionArray();
 
@@ -233,6 +259,8 @@ namespace Bomberman.GameStuff
             {
                 for (int j = startTileX; j < endTileX; j++)
                 {
+                    if (i * mapWidth + j >= collisionMap.Length || i * mapWidth + j < 0)
+                        continue;
                     if (collisionMap[i*mapWidth + j] > 0)
                     {
                         collisionBox.X = j*tileWidth;

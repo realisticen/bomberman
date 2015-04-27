@@ -1,4 +1,5 @@
-﻿using Bomberman.Screens;
+﻿using System;
+using Bomberman.Screens;
 using Bomberman.Utilities;
 using Bomberman.Utilities.Examples.Classes;
 using Microsoft.Xna.Framework;
@@ -20,6 +21,7 @@ namespace Bomberman
         public const int VIRTUAL_RESOLUTION_HEIGHT = 768;
         private ScreenManager screenManager;
 
+        public static Random random = new Random(2);
         public MainGame()
             : base()
         {

@@ -64,7 +64,7 @@ namespace Bomberman.Screens
                 new Vector2(200, 120),
                 new Vector2(170, 110)
             };
-            map.Spawns = new short[] {22};
+            map.Spawns = new short[] { 22, 46, 68, 80, 73, 90 };
 
             //Map map = JsonConvert.DeserializeObject<Map>(File.ReadAllText("Maps/test.map"));
 

@@ -17,11 +17,14 @@ namespace Bomberman.Screens
         private Player player;
         private Map map;
         private Texture2D bombTexture;
+        private Texture2D mobSheet;
         private Texture2D explosionSheet;
         private List<Bomb> bombs = new List<Bomb>();
-        public List<Explosion> explosions = new List<Explosion>(); 
+        private List<Monster> monsters;
+        public List<Explosion> explosions = new List<Explosion>();
 
-        public Player1Screen(ScreenManager owner, Map _map) : base(owner)
+        public Player1Screen(ScreenManager owner, Map _map)
+            : base(owner)
         {
             map = _map;
         }
@@ -31,6 +34,7 @@ namespace Bomberman.Screens
             map.Draw(spriteBatch);
             bombs.ForEach(bomb => bomb.Draw(spriteBatch));
             player.Draw(spriteBatch);
+            monsters.ForEach(monster => monster.Draw(spriteBatch));
             explosions.ForEach(explosion => explosion.Draw(spriteBatch));
         }
 
@@ -67,9 +71,9 @@ namespace Bomberman.Screens
                 if (bomb.IsAlive) return;
 
                 var rexts = map.MakeExplosion(bomb);
-                explosions.Add(new Explosion(rexts.Item1, rexts.Item2, explosionSheet)); 
+                explosions.Add(new Explosion(rexts.Item1, rexts.Item2, explosionSheet));
             });
-            
+
             bombs.RemoveAll(bomb => bomb.IsAlive == false);
             explosions.RemoveAll(explosion => explosion.isAlive == false);
 
@@ -104,12 +108,57 @@ namespace Bomberman.Screens
 
             foreach (var explosion in explosions)
             {
-                if(explosion.Collides(player.HitBox))
-                    player.PlayerColor = Color.Red;
+                if (explosion.Collides(player.HitBox))
+                    player.Kill();
+            }
+
+            for (int i = 0; i < monsters.Count; i++)
+            {
+                var monster = monsters[i];
+
+                monster.Update();
+
+                if (explosions.Exists(explosion => explosion.Collides(monster.HitBox)))
+                {
+                    monsters.RemoveAt(i);
+                    i--;
+                    // TODO: Če ni vč mobu si zmagu
+                }
+
+                map.Colides(monster);
+                if (monster.HitBox.Intersects(player.HitBox))
+                {
+                    player.Kill();
+                }
+
+                foreach (var bomb in bombs)
+                {
+                    if (bomb.IsSolid && bomb.MapCollisionBox.Intersects(monster.MapCollisionBox))
+                    {
+                        if (monster.OldPosition.X != monster.Position.X) // Če je pršu z leve/ desne
+                        {
+                            if (monster.OldPosition.X > monster.Position.X) // Če pride iz leve
+                                monster.Acceleration.X += (bomb.MapCollisionBox.Right - monster.MapCollisionBox.X); //+ offSet;
+                            else
+                                monster.Acceleration.X -= ((monster.MapCollisionBox.Right) - bomb.MapCollisionBox.X); //+ offSet);
+                        }
+                        else if (monster.OldPosition.Y != monster.Position.Y)
+                        {
+                            if (monster.OldPosition.Y > monster.Position.Y) // Če pride iz uspod
+                                monster.Acceleration.Y += (bomb.MapCollisionBox.Bottom - monster.MapCollisionBox.Y);
+                            else
+                                monster.Acceleration.Y -= (monster.MapCollisionBox.Bottom - bomb.MapCollisionBox.Y);
+                        }
+                        monster.UpdatePos();
+                        break;
+                    }
+
+                }
             }
 
             map.CheckPowers(player);
         }
+
 
         public override void LoadContent(ContentManager content)
         {
@@ -117,12 +166,15 @@ namespace Bomberman.Screens
             player = new Player(content.Load<Texture2D>("Game/player"), Color.White);
             bombTexture = content.Load<Texture2D>("Game/bomb");
             explosionSheet = content.Load<Texture2D>("Game/explosion");
-            
+            mobSheet = content.Load<Texture2D>("Game/mob");
+
+
             player.Position = map.GetSpawnLocation(0);
             player.Position.Y -= player.Height / 2;
             player.Position.X += player.Width / 4 - 4;
 
             map.LoadTileSet(content);
+            monsters = map.GetMonsters(mobSheet);
         }
     }
 }
