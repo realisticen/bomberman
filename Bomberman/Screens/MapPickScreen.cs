@@ -36,7 +36,6 @@ namespace Bomberman.Screens
             this.content = content;
 
             Map map = new Map();
-            //map.tileSet = content.Load<Texture2D>("Maps/tileset");
             map.tileSetPath = "Maps/tileset";
             map.powerSheetPath = "Maps/powers";
             map.tileWidth = 64;
@@ -64,11 +63,11 @@ namespace Bomberman.Screens
                 new Vector2(200, 120),
                 new Vector2(170, 110)
             };
-            map.Spawns = new short[] { 22, 46, 68, 80, 73, 90 };
+            map.Spawns.AddRange(new short[]{ 22, 46, 68, 80, 73, 90 });
 
             //Map map = JsonConvert.DeserializeObject<Map>(File.ReadAllText("Maps/test.map"));
 
-            owner.ChangeScreen(new Player1Screen(owner, map));
+            owner.ChangeScreen(new MapEditorScreen(owner, map));
 
             var json = JsonConvert.SerializeObject(map); // TODO: SHRAN KT JSON PA NALODI KT JSON...
             File.WriteAllText("Maps/test.map", json);

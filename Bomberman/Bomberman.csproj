@@ -47,6 +47,7 @@
     <Compile Include="GameStuff\Map.cs" />
     <Compile Include="GameStuff\Monster.cs" />
     <Compile Include="GameStuff\Player.cs" />
+    <Compile Include="GameStuff\Settings.cs" />
     <Compile Include="MainGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

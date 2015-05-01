@@ -40,7 +40,7 @@ namespace Bomberman.GameStuff
         public Vector2[] _portals;
         private short[] collisionMap;
 
-        public short[] Spawns;
+        public List<short> Spawns = new List<short>(2);
         private Rectangle collisionBox;
         private Texture2D tileSet, powerSheet;
         public string tileSetPath, powerSheetPath;
@@ -80,9 +80,9 @@ namespace Bomberman.GameStuff
 
         public List<Monster> GetMonsters(Texture2D sheet)
         {
-            if (Spawns.Length < 2)
+            if (Spawns.Count < 2)
                 return null;
-            var tmp = new List<Monster>(Spawns.Length - 2);
+            var tmp = new List<Monster>(Spawns.Count - 2);
             for (int i = 0; i < tmp.Capacity; i++)
             {
                 tmp.Add(new Monster(sheet));

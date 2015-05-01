@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Bomberman.BaseClass;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Bomberman.GameStuff
@@ -11,6 +12,8 @@ namespace Bomberman.GameStuff
     class Bomb : MovableObject
     {
         public Color BombColor;
+
+        public static SoundEffect ExplosionSoundEffect;
 
         private Texture2D spriteSheet;
         private Rectangle sourceRectangle, destinationRectangle;
@@ -60,6 +63,7 @@ namespace Bomberman.GameStuff
 
             if (life < 0)
             {
+                ExplosionSoundEffect.Play(Settings.SoundEffectsVolume, 0, 0);
                 IsAlive = false;
                 Owner.BombDestroyed();
                 return;

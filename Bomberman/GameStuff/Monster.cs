@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Bomberman.BaseClass;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Bomberman.GameStuff
@@ -11,6 +12,8 @@ namespace Bomberman.GameStuff
     class Monster : MovableObject
     {
         public Rectangle HitBox;
+
+        public static SoundEffect DeathSoundEffect;
 
         private Vector2 uPos;
         private Texture2D spriteSheet;
@@ -165,6 +168,11 @@ namespace Bomberman.GameStuff
             spriteBatch.Draw(spriteSheet, new Rectangle((int)Position.X, (int)Position.Y, sourceRectangle.Width, Height), sourceRectangle, Color.White);
 
             //spriteBatch.Draw(spriteSheet, MapCollisionBox, Color.Red); // Začasno, da se vidi collisionBox...
+        }
+
+        internal void Kill()
+        {
+            DeathSoundEffect.Play(Settings.SoundEffectsVolume, 0, 0);
         }
     }
 }

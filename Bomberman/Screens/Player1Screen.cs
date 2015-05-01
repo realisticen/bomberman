@@ -6,9 +6,11 @@ using Bomberman.BaseClass;
 using Bomberman.GameStuff;
 using Bomberman.Utilities;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 
 namespace Bomberman.Screens
 {
@@ -16,9 +18,7 @@ namespace Bomberman.Screens
     {
         private Player player;
         private Map map;
-        private Texture2D bombTexture;
-        private Texture2D mobSheet;
-        private Texture2D explosionSheet;
+        private Texture2D bombTexture, mobSheet, explosionSheet, endGameTexture2D;
         private List<Bomb> bombs = new List<Bomb>();
         private List<Monster> monsters;
         public List<Explosion> explosions = new List<Explosion>();
@@ -36,11 +36,23 @@ namespace Bomberman.Screens
             player.Draw(spriteBatch);
             monsters.ForEach(monster => monster.Draw(spriteBatch));
             explosions.ForEach(explosion => explosion.Draw(spriteBatch));
+
+            if (endGame)
+            {
+                spriteBatch.Draw(endGameTexture2D, new Vector2(288,299), Color.White);
+            }
         }
 
         private KeyboardState state;
         public override void Update(GameTime gameTime)
         {
+            if (endGame)
+            {
+
+
+                return;
+            }
+
             state = Keyboard.GetState();
             if (state.IsKeyDown(Keys.Up))
                 player.Move(Directons.UP);
@@ -120,9 +132,14 @@ namespace Bomberman.Screens
 
                 if (explosions.Exists(explosion => explosion.Collides(monster.HitBox)))
                 {
+                    monster.Kill();
                     monsters.RemoveAt(i);
                     i--;
-                    // TODO: Če ni vč mobu si zmagu
+                    if (monsters.Count == 0)
+                    {
+                        playerWin = endGame = true;
+                        endGameTexture2D = content.Load<Texture2D>("Game/win");
+                    }
                 }
 
                 map.Colides(monster);
@@ -160,6 +177,13 @@ namespace Bomberman.Screens
         }
 
 
+        private bool playerWin = false, endGame = false;
+        private void Gameover()
+        {
+            endGameTexture2D = content.Load<Texture2D>("Game/lost");
+            endGame = true;
+        }
+
         public override void LoadContent(ContentManager content)
         {
             this.content = content;
@@ -168,13 +192,22 @@ namespace Bomberman.Screens
             explosionSheet = content.Load<Texture2D>("Game/explosion");
             mobSheet = content.Load<Texture2D>("Game/mob");
 
+            Player.DeathSoundEffect = content.Load<SoundEffect>("Game/Sound/death");
+            Monster.DeathSoundEffect = content.Load<SoundEffect>("Game/Sound/mob_death");
+            Bomb.ExplosionSoundEffect = content.Load<SoundEffect>("Game/Sound/explosion");
 
             player.Position = map.GetSpawnLocation(0);
             player.Position.Y -= player.Height / 2;
             player.Position.X += player.Width / 4 - 4;
+            player.Death += new Player.PlayerDeathEventHandler(Gameover);
 
             map.LoadTileSet(content);
             monsters = map.GetMonsters(mobSheet);
+
+
+            MediaPlayer.IsRepeating = true;
+            MediaPlayer.Volume = 0.5f;
+            MediaPlayer.Play(content.Load<Song>("Game/Sound/player1music.wav"));
         }
     }
 }

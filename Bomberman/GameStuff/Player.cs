@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using Bomberman.BaseClass;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Bomberman.GameStuff
@@ -13,6 +14,8 @@ namespace Bomberman.GameStuff
     {
         public Color PlayerColor;
         public Rectangle HitBox;
+
+        public static SoundEffect DeathSoundEffect;
 
         private int maxBombs = 1;
         public int Bombs = 0;
@@ -178,9 +181,20 @@ namespace Bomberman.GameStuff
             velocity *= 0;
         }
 
+        public bool IsAlive = true;
+
+        public delegate void PlayerDeathEventHandler();
+
+        public event PlayerDeathEventHandler Death;
         public void Kill()
         {
+            if (!IsAlive)
+                return;
+            if(Death != null)
+                Death();
+            DeathSoundEffect.Play(Settings.SoundEffectsVolume, 0, 0);
             PlayerColor = Color.Red;
+            IsAlive = false;
         }
 
 
