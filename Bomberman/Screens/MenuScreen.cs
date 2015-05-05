@@ -44,7 +44,7 @@ namespace Bomberman.Screens
             buttonManager = new ButtonManager();
             var image = content.Load<Texture2D>("MenuScreen/1player");
             var button = new ButtonImage(new Image(image));
-            button.MouseClick += new Clickable.MouseEventHandler(Hide);
+            button.MouseClick += new Clickable.MouseEventHandler(Player_1);
             button.MouseLeave += new Clickable.MouseEventHandler(Clear);
             button.MouseEnter += new Clickable.MouseEventHandler(Hover);
             button.SetPosition(100, 300);
@@ -53,7 +53,7 @@ namespace Bomberman.Screens
             image = content.Load<Texture2D>("MenuScreen/2player");
             button = new ButtonImage(new Image(image));
             button.MouseLeave += new Clickable.MouseEventHandler(Clear);
-            button.MouseClick += new Clickable.MouseEventHandler(Hide);
+            button.MouseClick += new Clickable.MouseEventHandler(Player_2);
             button.MouseEnter += new Clickable.MouseEventHandler(Hover);
             button.SetPosition(100, 450);
             buttonManager.Buttons.Add(button);
@@ -61,7 +61,7 @@ namespace Bomberman.Screens
             image = content.Load<Texture2D>("MenuScreen/mapeditor");
             button = new ButtonImage(new Image(image));
             button.MouseLeave += new Clickable.MouseEventHandler(Clear);
-            button.MouseClick += new Clickable.MouseEventHandler(Hide);
+            button.MouseClick += new Clickable.MouseEventHandler(MapEditor);
             button.MouseEnter += new Clickable.MouseEventHandler(Hover);
             button.SetPosition(780, 300);
             buttonManager.Buttons.Add(button);
@@ -102,6 +102,20 @@ namespace Bomberman.Screens
             but.Image.Color = Color.Red;
         }
 
+        private void Player_1(object button)
+        {
+            owner.ChangeScreen(new MapPickScreen(owner, MapPickScreen.GameType.Player_1));
+        }
+
+        private void Player_2(object button)
+        {
+            owner.ChangeScreen(new MapPickScreen(owner, MapPickScreen.GameType.Player_2));
+        }
+
+        private void MapEditor(object button)
+        {
+            owner.ChangeScreen(new MapPickScreen(owner, MapPickScreen.GameType.MapEditor));
+        }
         private void Exit(object button)
         {
             owner.game.Exit();

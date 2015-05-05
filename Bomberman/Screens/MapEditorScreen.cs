@@ -21,6 +21,7 @@ namespace Bomberman.Screens
         private Texture2D tools, tileSet;
         private Image hudImg;
         private Rectangle sourcerRectangle, destinationRectangle;
+        private string _mapName;
 
         enum Tool
         {
@@ -34,20 +35,30 @@ namespace Bomberman.Screens
             Exit
         }
 
-        public MapEditorScreen(ScreenManager owner, Map _map) : base( owner)
+        public MapEditorScreen(ScreenManager owner, Map _map, string mapName) : base( owner)
         {
             map = _map;
             sourcerRectangle = destinationRectangle = new Rectangle(0, 0, iconWidth, iconWidth);
+            _mapName = mapName;
         }
 
         private Tool tool;
-        private const int startXIcons = (1344 - totaWidth) / 2, iconWidth = 64, totaWidth = 552;
+        private const int startXIcons = (1344 - totaWidth) / 2, iconWidth = 64, totaWidth = 512;
         public override void Draw(SpriteBatch spriteBatch)
         {
             map.Draw(spriteBatch);
 
-            foreach (var VARIABLE in map.Portals)
+            for (int j = 0; j < map.Portals.Count; j++)
             {
+                var portal = map.Portals[j];
+                var color = new Color((int)(portal.X), (int)portal.Y, (int)(portal.X - portal.Y));
+                spriteBatch.Draw(tileSet, new Rectangle((int)portal.X % map.mapWidth * map.tileWidth, (int)portal.X / map.mapWidth * map.tileHeight, 64, 64), new Rectangle(192, 0, 64, 64), color);
+                spriteBatch.Draw(tileSet, new Rectangle((int)portal.Y % map.mapWidth * map.tileWidth, (int)portal.Y / map.mapWidth * map.tileHeight, 64, 64), new Rectangle(192, 0, 64, 64), color);
+            }
+
+            if (tmpPortal.X != 0)
+            {
+                spriteBatch.Draw(tileSet, new Rectangle((int)tmpPortal.X % map.mapWidth * map.tileWidth, (int)tmpPortal.X / map.mapWidth * map.tileHeight, 64, 64), new Rectangle(192, 0, 64, 64), Color.Green);
                 
             }
 
@@ -57,7 +68,7 @@ namespace Bomberman.Screens
                 rect.X = (int)map.GetSpawnLocation(i).X;
                 rect.Y = (int)map.GetSpawnLocation(i).Y;
                 if (i < 2)
-                    spriteBatch.Draw(tools, rect, new Rectangle(64, 0, 64, 64), Color.White);
+                    spriteBatch.Draw(tools, rect, new Rectangle(64, 0, 64, 64), ( i == 0) ? Color.White : Color.BurlyWood);
                 else
                     spriteBatch.Draw(tools, rect, new Rectangle(0, 0, 64, 64), Color.White);
             }
@@ -91,6 +102,7 @@ namespace Bomberman.Screens
 
         private int player = 0;
         private bool hideHud = false, justPressed = false;
+        private Vector2 tmpPortal = Vector2.Zero;
         public override void Update(GameTime gameTime)
         {
             if (!justPressed && Keyboard.GetState().IsKeyDown(Keys.H))
@@ -105,16 +117,18 @@ namespace Bomberman.Screens
             if (!hideHud && mouseState.LeftButton == ButtonState.Pressed && mouseState.Y > destinationRectangle.Y && mouseState.Y < destinationRectangle.Bottom
                 && mouseState.X > startXIcons && mouseState.X < startXIcons + totaWidth)
             {
+                if (tool == Tool.Portal)
+                    tmpPortal = Vector2.Zero;
                 tool = (Tool)((mouseState.X - startXIcons) / 64);
                 switch (tool)
                 {
                     case Tool.Save:
-                        var json = JsonConvert.SerializeObject(map); // TODO: SHRAN KT JSON PA NALODI KT JSON...
-                        File.WriteAllText("Maps/test.map", json);
+                        var json = JsonConvert.SerializeObject(map);
+                        File.WriteAllText(_mapName, json);
                         tool = Tool.Grass;                        
                         break;
                     case Tool.Exit:
-                        owner.ChangeScreen(new MapPickScreen(owner));
+                        owner.ChangeScreen(new MapPickScreen(owner, MapPickScreen.GameType.MapEditor));
                         tool = Tool.Grass;
                         break;
                 }
@@ -147,6 +161,7 @@ namespace Bomberman.Screens
                                 else
                                     player = 0;
                                 map.Spawns[player] = (short)(tileY*map.mapWidth + tileX);
+                                RemoveMapPortal(tileY, tileX);
                                 map.MapLayout[tileY * map.mapWidth + tileX] = (int)Tool.Grass;
                             }
 
@@ -161,19 +176,55 @@ namespace Bomberman.Screens
                             if (!map.Spawns.Contains((short) (tileY*map.mapWidth + tileX)))
                             {
                                 map.Spawns.Add((short)(tileY * map.mapWidth + tileX));
+                                RemoveMapPortal(tileY, tileX);
                                 map.MapLayout[tileY * map.mapWidth + tileX] = (int)Tool.Grass;
                             }
+                        }
+                        else if(tool == Tool.Portal)
+                        {
+                            if (!map.Portals.Exists(vector2 => vector2.X == tileY * map.mapWidth + tileX || vector2.Y == tileY * map.mapWidth + tileX))
+                                if (tmpPortal == Vector2.Zero)
+                                {
+                                    tmpPortal.X = tileY*map.mapWidth + tileX;
+                                }
+                                else
+                                {
+                                    if (tmpPortal.X != tileY*map.mapWidth + tileX)
+                                    {
+                                        tmpPortal.Y = tileY*map.mapWidth + tileX;
+                                        map.Portals.Add(tmpPortal);
+                                        tmpPortal = Vector2.Zero;
+                                        map.UpdateCollisionArray();
+                                        map.MapLayout[tileY * map.mapWidth + tileX] = 0;
+                                    }
+                                }
                         }
                         else
                         {
                             if(map.Spawns[0] != (short) (tileY*map.mapWidth + tileX) && map.Spawns[1] != (short) (tileY*map.mapWidth + tileX))
                             {
+                                RemoveMapPortal(tileY, tileX);
                                 map.MapLayout[tileY * map.mapWidth + tileX] = (short)tool;
                                 map.Spawns.RemoveAll(s => s == (short) (tileY*map.mapWidth + tileX));
                             }
                         }
                     }
                 }
+            }
+        }
+
+        private void RemoveMapPortal(int tileY, int tileX)
+        {
+            if (map.MapLayout[tileY*map.mapWidth + tileX] == 3)
+            {
+                map.Portals.RemoveAll(
+                    vector2 => vector2.X == tileY*map.mapWidth + tileX || vector2.Y == tileY*map.mapWidth + tileX);
+                for (int i = 0; i < map.MapLayout.Length; i++)
+                {
+                    if (map.MapLayout[i] == 3)
+                        map.MapLayout[i] = 0;
+                }
+                map.UpdateCollisionArray();
             }
         }
 

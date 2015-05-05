@@ -55,6 +55,7 @@
     <Compile Include="Screens\MapEditorScreen.cs" />
     <Compile Include="Screens\MapPickScreen.cs" />
     <Compile Include="Screens\MenuScreen.cs" />
+    <Compile Include="Screens\Player2Screen.cs" />
     <Compile Include="Screens\SplashScreen.cs" />
     <Compile Include="Utilities\ButtonImage.cs" />
     <Compile Include="Utilities\ButtonManager.cs" />

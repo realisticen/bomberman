@@ -79,7 +79,7 @@ namespace Bomberman
             // Create a new SpriteBatch, which can be used to draw textures.
             screenManager = new ScreenManager(this);
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            screenManager.ChangeScreen(new MapPickScreen(screenManager)); // todo: naštimi da swe začene spalshcsreen
+            screenManager.ChangeScreen(new MapPickScreen(screenManager, MapPickScreen.GameType.Player_1)); // todo: naštimi da swe začene spalshcsreen
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace Bomberman
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)) // TODO: Odstran tole
                 Exit();
 
             screenManager.Update(gameTime);

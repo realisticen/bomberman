@@ -37,7 +37,7 @@ namespace Bomberman.GameStuff
 
         public short[] _mapLayout;
         public short[] _solidTiles;
-        public Vector2[] _portals;
+        public List<Vector2> _portals = new List<Vector2>();
         private short[] collisionMap;
 
         public List<short> Spawns = new List<short>(2);
@@ -58,7 +58,7 @@ namespace Bomberman.GameStuff
             set { _solidTiles = value; UpdateCollisionArray(); }
         }
 
-        public Vector2[] Portals
+        public List<Vector2> Portals
         {
             get { return _portals; }
             set { _portals = value;
@@ -184,9 +184,10 @@ namespace Bomberman.GameStuff
             }
             UpdateCollisionArray();
 
+            // Pogledam kako deleč lahko gre ekslpozija
             for (int i = 1; i < bomb.Owner.BombSize + 1; i++) // Levo
             {
-                if(collisionMap[(centerTileX + (mapWidth * centerTileY)) - i] != 0)
+                if (collisionMap[(centerTileX + (mapWidth * centerTileY)) - i] != 0 && _mapLayout[(centerTileX + (mapWidth * centerTileY)) - i] != 3)
                     break;
 
                 hExpl.X -= tileWidth;
@@ -195,7 +196,7 @@ namespace Bomberman.GameStuff
 
             for (int i = 1; i < bomb.Owner.BombSize + 1; i++) // desno
             {
-                if (collisionMap[centerTileX + (mapWidth * centerTileY) + i] != 0)
+                if (collisionMap[centerTileX + (mapWidth * centerTileY) + i] != 0 && _mapLayout[centerTileX + (mapWidth * centerTileY) + i] != 3)
                     break;
 
                 hExpl.Width += tileWidth;
@@ -203,7 +204,7 @@ namespace Bomberman.GameStuff
 
             for (int i = 1; i < bomb.Owner.BombSize + 1; i++) // gor
             {
-                if (collisionMap[centerTileX + (mapWidth * (centerTileY - i))] != 0)
+                if (collisionMap[centerTileX + (mapWidth * (centerTileY - i))] != 0 && _mapLayout[centerTileX + (mapWidth * (centerTileY - i))] != 3)
                     break;
 
                 vExpl.Y -= tileHeight;
@@ -211,7 +212,7 @@ namespace Bomberman.GameStuff
             }
             for (int i = 1; i < bomb.Owner.BombSize + 1; i++) //dol
             {
-                if (collisionMap[centerTileX + (mapWidth * (centerTileY + i))] != 0)
+                if (collisionMap[centerTileX + (mapWidth * (centerTileY + i))] != 0 && _mapLayout[centerTileX + (mapWidth * (centerTileY + i))] != 3)
                     break;
 
                 vExpl.Height += tileHeight;
@@ -234,7 +235,7 @@ namespace Bomberman.GameStuff
 
             if (Portals == null)
                 return;
-            for (short i = 0; i < Portals.Length; i++)
+            for (short i = 0; i < Portals.Count; i++)
             {
                 _mapLayout[(int)Portals[i].X] = 3;
                 _mapLayout[(int)Portals[i].Y] = 3;
@@ -369,6 +370,26 @@ namespace Bomberman.GameStuff
             foreach (var power in powers)
             {
                 spriteBatch.Draw(powerSheet, power.Hitbox, power.drawRect, Color.White);
+            }
+        }
+
+        public void DrawSmall(SpriteBatch spriteBatch, float scale, Vector2 pos)
+        {
+            for (int i = 0; i < mapHeight; i++)
+            {
+                for (int j = 0; j < mapWidth; j++)
+                {
+                    if (_mapLayout[i * mapWidth + j] == 3)
+                    {
+                        spriteBatch.Draw(tileSet, new Vector2(j * tileWidth * scale + pos.X, i * tileHeight * scale + pos.Y), new Rectangle(0, 0, tileWidth, tileHeight), Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 1);
+
+                        spriteBatch.Draw(tileSet, new Vector2(j * tileWidth * scale + pos.X, scale * i * tileHeight + pos.Y), new Rectangle(tileWidth * _mapLayout[i * mapWidth + j], 0, tileWidth, tileHeight), Color.White,
+                            0, Vector2.Zero, scale, SpriteEffects.None, 0);
+                        continue;
+                    }
+
+                    spriteBatch.Draw(tileSet, new Vector2(j * tileWidth * scale + pos.X, scale * i * tileHeight + pos.Y), new Rectangle(tileWidth * _mapLayout[i * mapWidth + j], 0, tileWidth, tileHeight), Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 1);
+                }
             }
         }
     }

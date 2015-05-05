@@ -19,6 +19,7 @@ namespace Bomberman.GameStuff
         private Texture2D spriteSheet;
         private Rectangle sourceRectangle, destinationRectangle;
         private Directons lastdDirecton, direction;
+        private int ticks, timeToChange;
         private float speed;
 
 
@@ -53,6 +54,8 @@ namespace Bomberman.GameStuff
             speed = 2;
             Position = new Vector2(600,540);
 
+            ticks = 0;
+            timeToChange = MainGame.random.Next(30, 100);
             Width = 49;
             Height = 49;
             sourceRectangle = new Rectangle(0, 0, Width, Height);
@@ -83,9 +86,21 @@ namespace Bomberman.GameStuff
 
         public void Update()
         {
-            velocity *= 0;
-            if(uPos != Position)
+            ticks ++;
+            if (ticks == timeToChange)
+            {
+                ticks = 0;
                 Move((Directons)MainGame.random.Next(1, 5));
+                timeToChange = MainGame.random.Next(30, 100);
+            }
+
+            velocity *= 0;
+
+            if (uPos != Position)
+            {
+                ticks = 0;
+                Move((Directons)MainGame.random.Next(1, 5));
+            }
             else
                 Move(direction);
 

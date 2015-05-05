@@ -11,6 +11,7 @@ namespace Bomberman.Utilities
     class ButtonImage : Clickable
     {
         public Image Image { get; private set; }
+        public bool Enabled = true;
 
         public ButtonImage(Image img)
         {
@@ -20,7 +21,8 @@ namespace Bomberman.Utilities
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            Image.Draw(spriteBatch);
+            if(Enabled)
+                Image.Draw(spriteBatch);
         }
 
         private void UpdateClickArea()

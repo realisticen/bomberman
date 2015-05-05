@@ -11,22 +11,27 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using Newtonsoft.Json;
 
 namespace Bomberman.Screens
 {
     class Player1Screen : Screen
     {
         private Player player;
-        private Map map;
+        private Map map, backup_map;
         private Texture2D bombTexture, mobSheet, explosionSheet, endGameTexture2D;
         private List<Bomb> bombs = new List<Bomb>();
         private List<Monster> monsters;
         public List<Explosion> explosions = new List<Explosion>();
 
+        private ButtonManager buttonManager;
+
         public Player1Screen(ScreenManager owner, Map _map)
             : base(owner)
         {
             map = _map;
+            var json = JsonConvert.SerializeObject(map);
+            backup_map = JsonConvert.DeserializeObject<Map>(json);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -40,6 +45,7 @@ namespace Bomberman.Screens
             if (endGame)
             {
                 spriteBatch.Draw(endGameTexture2D, new Vector2(288,299), Color.White);
+                buttonManager.Draw(spriteBatch);
             }
         }
 
@@ -48,8 +54,7 @@ namespace Bomberman.Screens
         {
             if (endGame)
             {
-
-
+                buttonManager.Update(owner.game.cam);
                 return;
             }
 
@@ -72,6 +77,7 @@ namespace Bomberman.Screens
                 {
                     bombs.Add(new Bomb(bombTexture, map.GetTileCenter(player.MapCollisionBox.Center.ToVector2()), player));
                     player.Bombs++;
+                    player.onBomb = true;
                 }
             }
 
@@ -99,9 +105,11 @@ namespace Bomberman.Screens
                         if (player.OldPosition.X != player.Position.X) // Če je pršu z leve/ desne
                         {
                             if (player.OldPosition.X > player.Position.X) // Če pride iz leve
-                                player.Acceleration.X += (bomb.MapCollisionBox.Right - player.MapCollisionBox.X); //+ offSet;
+                                player.Acceleration.X += (bomb.MapCollisionBox.Right - player.MapCollisionBox.X);
+                                    //+ offSet;
                             else
-                                player.Acceleration.X -= ((player.MapCollisionBox.Right) - bomb.MapCollisionBox.X); //+ offSet);
+                                player.Acceleration.X -= ((player.MapCollisionBox.Right) - bomb.MapCollisionBox.X);
+                                    //+ offSet);
                         }
                         else if (player.OldPosition.Y != player.Position.Y)
                         {
@@ -115,7 +123,11 @@ namespace Bomberman.Screens
                     }
                 }
                 else
+                {
+                    if(bomb == bombs.Last())
+                        player.onBomb = false;
                     bomb.IsSolid = true;
+                }
             }
 
             foreach (var explosion in explosions)
@@ -180,10 +192,63 @@ namespace Bomberman.Screens
         private bool playerWin = false, endGame = false;
         private void Gameover()
         {
+            buttonManager = new ButtonManager();
+            var image = content.Load<Texture2D>("Game/menu");
+            var button = new ButtonImage(new Image(image));
+            button.MouseLeave += new Clickable.MouseEventHandler(Clear);
+            button.MouseEnter += new Clickable.MouseEventHandler(Hover);
+            button.MouseClick += new Clickable.MouseEventHandler(GoToMenu);
+            button.SetPosition(360, 500);
+            buttonManager.Buttons.Add(button);
+
+            image = content.Load<Texture2D>("Game/retry");
+            button = new ButtonImage(new Image(image));
+            button.MouseClick += new Clickable.MouseEventHandler(Retry);
+            button.MouseLeave += new Clickable.MouseEventHandler(Clear);
+            button.MouseEnter += new Clickable.MouseEventHandler(Hover);
+            button.SetPosition(620, 500);
+            buttonManager.Buttons.Add(button);
+
+            image = content.Load<Texture2D>("Game/map");
+            button = new ButtonImage(new Image(image));
+            button.MouseClick += new Clickable.MouseEventHandler(GoToMapPick);
+            button.MouseLeave += new Clickable.MouseEventHandler(Clear);
+            button.MouseEnter += new Clickable.MouseEventHandler(Hover);
+            button.SetPosition(800, 500);
+            buttonManager.Buttons.Add(button);
+
             endGameTexture2D = content.Load<Texture2D>("Game/lost");
             endGame = true;
         }
+        private void Retry(object button)
+        {
+            owner.ChangeScreen(new Player1Screen(owner, backup_map));
+        }
 
+        private void GoToMapPick(object button)
+        {
+            owner.ChangeScreen(new MapPickScreen(owner, MapPickScreen.GameType.Player_1));
+        }
+
+        private void GoToMenu(object button)
+        {
+            owner.ChangeScreen(new MenuScreen(owner));
+        }
+
+
+        private void Clear(object button)
+        {
+            var but = button as ButtonImage;
+            but.Image.Color = Color.White;
+        }
+
+        private void Hover(object button)
+        {
+            var but = button as ButtonImage;
+            but.Image.Color = Color.Turquoise;
+        }
+
+        private SoundEffectInstance backgroundMusic;
         public override void LoadContent(ContentManager content)
         {
             this.content = content;
@@ -204,10 +269,10 @@ namespace Bomberman.Screens
             map.LoadTileSet(content);
             monsters = map.GetMonsters(mobSheet);
 
-
-            MediaPlayer.IsRepeating = true;
-            MediaPlayer.Volume = 0.5f;
-            MediaPlayer.Play(content.Load<Song>("Game/Sound/player1music.wav"));
+            backgroundMusic = content.Load<SoundEffect>("Game/Sound/player1music.wav").CreateInstance();
+            backgroundMusic.Volume = 0.5f;
+            backgroundMusic.IsLooped = true;
+            backgroundMusic.Play();
         }
     }
 }

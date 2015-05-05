@@ -51,9 +51,10 @@ namespace Bomberman.GameStuff
             }
         }
 
+        public bool onBomb = false;
         public bool CanPlaceBomb()
         {
-            if (Bombs < maxBombs && ticks > 26)
+            if (Bombs < maxBombs && !onBomb)
             {
                 ticks = 0;
                 return true;
