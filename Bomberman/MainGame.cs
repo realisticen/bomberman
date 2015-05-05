@@ -79,7 +79,7 @@ namespace Bomberman
             // Create a new SpriteBatch, which can be used to draw textures.
             screenManager = new ScreenManager(this);
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            screenManager.ChangeScreen(new MapPickScreen(screenManager, MapPickScreen.GameType.Player_1)); // todo: naštimi da swe začene spalshcsreen
+            screenManager.ChangeScreen(new MenuScreen(screenManager)); // todo: naštimi da swe začene spalshcsreen
         }
 
         /// <summary>

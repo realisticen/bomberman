@@ -185,7 +185,6 @@ namespace Bomberman.Screens
             //var json = JsonConvert.SerializeObject(map); // TODO: SHRAN KT JSON PA NALODI KT JSON...
             //File.WriteAllText("Maps/test.map", json);
 
-
         }
 
         private void NewMap(object button)
