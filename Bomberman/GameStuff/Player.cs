@@ -17,7 +17,7 @@ namespace Bomberman.GameStuff
 
         public static SoundEffect DeathSoundEffect;
 
-        private int maxBombs = 1;
+        private int maxBombs = 4;
         public int Bombs = 0;
         public int BombSize = 1;
 

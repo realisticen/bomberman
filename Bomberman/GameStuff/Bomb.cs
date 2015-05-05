@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Lifetime;
 using System.Text;
 using Bomberman.BaseClass;
 using Microsoft.Xna.Framework;
@@ -39,6 +40,11 @@ namespace Bomberman.GameStuff
                     Acceleration.X += speed;
                     break;
             }
+        }
+
+        public void Kill()
+        {
+            life = -2;
         }
 
         public Bomb(Texture2D sprites, Vector2 position, Player _owner)

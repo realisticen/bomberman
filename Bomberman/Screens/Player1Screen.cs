@@ -130,11 +130,7 @@ namespace Bomberman.Screens
                 }
             }
 
-            foreach (var explosion in explosions)
-            {
-                if (explosion.Collides(player.HitBox))
-                    player.Kill();
-            }
+            
 
             for (int i = 0; i < monsters.Count; i++)
             {
@@ -183,6 +179,18 @@ namespace Bomberman.Screens
                     }
 
                 }
+            }
+
+            foreach (var explosion in explosions)
+            {
+                if (explosion.Collides(player.HitBox))
+                    player.Kill();
+                foreach (var bomb in bombs)
+                {
+                    if (explosion.Collides(bomb.MapCollisionBox))
+                        bomb.Kill();
+                }
+
             }
 
             map.CheckPowers(player);
