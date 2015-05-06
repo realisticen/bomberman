@@ -10,11 +10,11 @@ namespace Bomberman.GameStuff
     class Explosion
     {
         private Texture2D sprteSheetFire;
-        private int timeToLive = 60, offSet, verticalSize, horizontalSize; // 60 == 1 s
-        private Rectangle verticalExplosion, horizontalExplosion, sourceRectangle;
+        private int timeToLive = 140, offSet, verticalSize, horizontalSize; // 60 == 1 s
+        private Rectangle verticalExplosion, horizontalExplosion, sourceRectangle, vHitBox, hHitbox;
 
         public bool isAlive = true;
-        private const int fireSize = 48, frameTime = 60 / 5;
+        private const int fireSize = 48, frameTime = 40 / 5;
 
         public Explosion(Rectangle _verticalExplosion, Rectangle _horizontalExplosion, Texture2D sprite)
         {
@@ -26,11 +26,23 @@ namespace Bomberman.GameStuff
             verticalSize = verticalExplosion.Height/verticalExplosion.Width;
             horizontalSize = horizontalExplosion.Width/horizontalExplosion.Height;
             offSet = (horizontalExplosion.Height - fireSize)/2;
+
+            vHitBox = verticalExplosion;
+            vHitBox.Y += 14;
+            vHitBox.X += 14;
+            vHitBox.Width -= 28;
+            vHitBox.Height -= 28;
+
+            hHitbox = horizontalExplosion;
+            hHitbox.Y += 14;
+            hHitbox.X += 14;
+            hHitbox.Width -= 28;
+            hHitbox.Height -= 28;
         }
 
         public bool Collides(Rectangle hitbox)
         {
-            if (verticalExplosion.Intersects(hitbox) || horizontalExplosion.Intersects(hitbox))
+            if (vHitBox.Intersects(hitbox) || hHitbox.Intersects(hitbox))
                 return true;
             return false;
         }
