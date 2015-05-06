@@ -51,12 +51,19 @@
     <Compile Include="MainGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\OptionsScreen.cs" />
     <Compile Include="Screens\Player1Screen.cs" />
     <Compile Include="Screens\MapEditorScreen.cs" />
     <Compile Include="Screens\MapPickScreen.cs" />
     <Compile Include="Screens\MenuScreen.cs" />
     <Compile Include="Screens\Player2Screen.cs" />
     <Compile Include="Screens\SplashScreen.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="Utilities\ButtonImage.cs" />
     <Compile Include="Utilities\ButtonManager.cs" />
     <Compile Include="Utilities\Image.cs" />
@@ -88,7 +95,12 @@
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />

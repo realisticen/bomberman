@@ -30,9 +30,6 @@ namespace Bomberman.Screens
 
         public override void Update(GameTime gameTime)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.Enter))
-                owner.ChangeScreen(new SplashScreen(owner));
-
             buttonManager.Update(owner.game.cam);
         }
 
@@ -69,7 +66,7 @@ namespace Bomberman.Screens
             image = content.Load<Texture2D>("MenuScreen/options");
             button = new ButtonImage(new Image(image));
             button.MouseLeave += new Clickable.MouseEventHandler(Clear);
-            button.MouseClick += new Clickable.MouseEventHandler(Exit);
+            button.MouseClick += new Clickable.MouseEventHandler(Options);
             button.MouseEnter += new Clickable.MouseEventHandler(Hover);
             button.SetPosition(900, 450);
             buttonManager.Buttons.Add(button);
@@ -100,6 +97,11 @@ namespace Bomberman.Screens
         {
             var but = button as ButtonImage;
             but.Image.Color = Color.Red;
+        }
+
+        private void Options(object button)
+        {
+            owner.ChangeScreen(new OptionsScreen(owner));
         }
 
         private void Player_1(object button)

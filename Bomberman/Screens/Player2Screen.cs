@@ -50,6 +50,7 @@ namespace Bomberman.Screens
         }
 
         private KeyboardState state;
+        private bool p1win = true;
         public override void Update(GameTime gameTime)
         {
             if (endGame)
@@ -155,7 +156,10 @@ namespace Bomberman.Screens
             foreach (var explosion in explosions)
             {
                 if (explosion.Collides(player.HitBox))
+                {
+                    p1win = false;
                     player.Kill();
+                }
 
                 if (explosion.Collides(player2.HitBox))
                     player2.Kill();
@@ -201,7 +205,10 @@ namespace Bomberman.Screens
             button.SetPosition(800, 500);
             buttonManager.Buttons.Add(button);
 
-            endGameTexture2D = content.Load<Texture2D>("Game/lost");
+            if(p1win)
+                endGameTexture2D = content.Load<Texture2D>("Game/p1win");
+            else
+                endGameTexture2D = content.Load<Texture2D>("Game/p2win");
             endGame = true;
         }
         private void Retry(object button)

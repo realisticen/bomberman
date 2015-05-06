@@ -19,6 +19,12 @@ namespace Bomberman.Utilities
             UpdateClickArea();
         }
 
+        public void ChangeImage(Image img)
+        {
+            img.Postion = Image.Postion;
+            Image = img;
+        }
+
         public void Draw(SpriteBatch spriteBatch)
         {
             if(Enabled)
