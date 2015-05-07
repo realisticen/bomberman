@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Storage;
+using OpenTK;
 
 namespace Bomberman
 {
@@ -37,7 +38,7 @@ namespace Bomberman
             IsMouseVisible = true;
         }
 
-        public void ChangeWindowSice(int width, int height)
+        public void ChangeWindowSize(int width, int height)
         {
             graphics.PreferredBackBufferWidth = width;
             graphics.PreferredBackBufferHeight = height;
@@ -54,20 +55,42 @@ namespace Bomberman
         {
             // TODO: Add your initialization logic here
             cam = new ResolutionRenderer(this, VIRTUAL_RESOLUTION_WIDTH, VIRTUAL_RESOLUTION_HEIGHT, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
-            //SetFullScreen(true);
+            if (Properties.Settings.Default.FullScreen)
+                SetFullScreen(true);
+            else
+                CenterWindow();
 
             base.Initialize();
         }
 
+        private void CenterWindow()
+        {
+            Window.Position = new Point(((GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - graphics.PreferredBackBufferWidth) / 2) - 31,
+                 ((GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - graphics.PreferredBackBufferHeight) / 2) - 8
+                 );
+        }
+
         public void SetFullScreen(bool value)
         {
-            graphics.IsFullScreen = value;
-            if(value)
+            Window.IsBorderless = value;
+
+            if (value)
+            {
+                graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+                graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+                graphics.ApplyChanges();
+
                 cam = new ResolutionRenderer(this, VIRTUAL_RESOLUTION_WIDTH, VIRTUAL_RESOLUTION_HEIGHT, GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width, GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height);
+            }
             else
             {
+                graphics.PreferredBackBufferWidth = VIRTUAL_RESOLUTION_WIDTH;
+                graphics.PreferredBackBufferHeight = VIRTUAL_RESOLUTION_HEIGHT;
+                graphics.ApplyChanges();
+
                 cam = new ResolutionRenderer(this, VIRTUAL_RESOLUTION_WIDTH, VIRTUAL_RESOLUTION_HEIGHT, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);                
             }
+            Window.Position = new Point(0, 0);
         }
 
         /// <summary>

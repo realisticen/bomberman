@@ -10,7 +10,7 @@ namespace Bomberman.GameStuff
     class Explosion
     {
         private Texture2D sprteSheetFire;
-        private int timeToLive = 140, offSet, verticalSize, horizontalSize; // 60 == 1 s
+        private int timeToLive = 40, offSet, verticalSize, horizontalSize; // 60 == 1 s
         private Rectangle verticalExplosion, horizontalExplosion, sourceRectangle, vHitBox, hHitbox;
 
         public bool isAlive = true;

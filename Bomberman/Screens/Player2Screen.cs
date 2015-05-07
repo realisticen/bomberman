@@ -264,10 +264,13 @@ namespace Bomberman.Screens
 
             map.LoadTileSet(content);
 
-            backgroundMusic = content.Load<SoundEffect>("Game/Sound/player1music.wav").CreateInstance();
-            backgroundMusic.Volume = 0.5f;
-            backgroundMusic.IsLooped = true;
-            backgroundMusic.Play();
+            if (Properties.Settings.Default.Music)
+            {
+                backgroundMusic = content.Load<SoundEffect>("Game/Sound/player1music.wav").CreateInstance();
+                backgroundMusic.Volume = 0.5f;
+                backgroundMusic.IsLooped = true;
+                backgroundMusic.Play();
+            }
         }
     }
 }

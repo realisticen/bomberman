@@ -145,8 +145,8 @@ namespace Bomberman.Screens
                     i--;
                     if (monsters.Count == 0)
                     {
-                        playerWin = endGame = true;
-                        endGameTexture2D = content.Load<Texture2D>("Game/win");
+                        playerWin = true;
+                        Gameover();
                     }
                 }
 
@@ -225,7 +225,11 @@ namespace Bomberman.Screens
             button.SetPosition(800, 500);
             buttonManager.Buttons.Add(button);
 
-            endGameTexture2D = content.Load<Texture2D>("Game/lost");
+            if(playerWin)
+                endGameTexture2D = content.Load<Texture2D>("Game/win");
+            else
+                endGameTexture2D = content.Load<Texture2D>("Game/lost");
+
             endGame = true;
         }
         private void Retry(object button)
@@ -276,11 +280,13 @@ namespace Bomberman.Screens
 
             map.LoadTileSet(content);
             monsters = map.GetMonsters(mobSheet);
-
-            backgroundMusic = content.Load<SoundEffect>("Game/Sound/player1music.wav").CreateInstance();
-            backgroundMusic.Volume = 0.5f;
-            backgroundMusic.IsLooped = true;
-            backgroundMusic.Play();
+            if (Properties.Settings.Default.Music)
+            {
+                backgroundMusic = content.Load<SoundEffect>("Game/Sound/player1music.wav").CreateInstance();
+                backgroundMusic.Volume = 0.5f;
+                backgroundMusic.IsLooped = true;
+                backgroundMusic.Play();
+            }
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Bomberman.Screens
 
         public MenuScreen(ScreenManager owner) : base( owner)
         {
-            
+            owner.game.cam.BackgroundColor = new Color(0, 18, 102);
         }
         public override void Draw(SpriteBatch spriteBatch)
         {

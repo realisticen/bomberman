@@ -69,7 +69,8 @@ namespace Bomberman.GameStuff
 
             if (life < 0)
             {
-                ExplosionSoundEffect.Play(Settings.SoundEffectsVolume, 0, 0);
+                if (Properties.Settings.Default.Sound)
+                    ExplosionSoundEffect.Play(Settings.SoundEffectsVolume, 0, 0);
                 IsAlive = false;
                 Owner.BombDestroyed();
                 return;

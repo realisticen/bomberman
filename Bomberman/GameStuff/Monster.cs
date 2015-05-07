@@ -187,7 +187,8 @@ namespace Bomberman.GameStuff
 
         internal void Kill()
         {
-            DeathSoundEffect.Play(Settings.SoundEffectsVolume, 0, 0);
+            if (Properties.Settings.Default.Sound)
+                DeathSoundEffect.Play(Settings.SoundEffectsVolume, 0, 0);
         }
     }
 }
