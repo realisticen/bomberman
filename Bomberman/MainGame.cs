@@ -60,7 +60,10 @@ namespace Bomberman
             else
                 CenterWindow();
 
+            graphics.PreferMultiSampling = true;
+
             base.Initialize();
+
         }
 
         private void CenterWindow()

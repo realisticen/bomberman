@@ -37,6 +37,7 @@ namespace Bomberman.Screens
 
         public MapPickScreen(ScreenManager owner, GameType type) : base( owner)
         {
+            owner.game.cam.BackgroundColor = new Color(0, 18, 102);
             _type = type;
         }
 

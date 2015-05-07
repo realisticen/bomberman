@@ -29,7 +29,9 @@ namespace Bomberman.Screens
         public Player2Screen(ScreenManager owner, Map _map)
             : base(owner)
         {
+            owner.game.cam.BackgroundColor = new Color(19, 20, 38);
             map = _map;
+            owner.game.IsMouseVisible = false;
             var json = JsonConvert.SerializeObject(map);
             backup_map = JsonConvert.DeserializeObject<Map>(json);
         }
@@ -180,6 +182,8 @@ namespace Bomberman.Screens
         private bool playerWin = false, endGame = false;
         private void Gameover()
         {
+            owner.game.IsMouseVisible = true;
+
             buttonManager = new ButtonManager();
             var image = content.Load<Texture2D>("Game/menu");
             var button = new ButtonImage(new Image(image));

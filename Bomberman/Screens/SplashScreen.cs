@@ -17,6 +17,7 @@ namespace Bomberman.Screens
 
         public SplashScreen(ScreenManager owner) : base( owner)
         {
+            owner.game.cam.BackgroundColor = Color.White;
         }
         public override void Draw(SpriteBatch spriteBatch)
         {
@@ -25,7 +26,7 @@ namespace Bomberman.Screens
 
         public override void Update(GameTime gameTime)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.Enter) || image.Alpha > 1.6f)
+            if (Keyboard.GetState().IsKeyDown(Keys.Enter) || image.Alpha > 1.6f || Mouse.GetState().RightButton == ButtonState.Pressed)
                 owner.ChangeScreen(new MenuScreen(owner));
             image.Alpha += 0.01f;
         }

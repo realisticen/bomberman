@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization.Formatters;
 using System.Text;
 using Bomberman.BaseClass;
 using Bomberman.GameStuff;
@@ -29,7 +30,9 @@ namespace Bomberman.Screens
         public Player1Screen(ScreenManager owner, Map _map)
             : base(owner)
         {
+            owner.game.IsMouseVisible = false;
             map = _map;
+            owner.game.cam.BackgroundColor = new Color(19, 20, 38);
             var json = JsonConvert.SerializeObject(map);
             backup_map = JsonConvert.DeserializeObject<Map>(json);
         }
@@ -200,6 +203,8 @@ namespace Bomberman.Screens
         private bool playerWin = false, endGame = false;
         private void Gameover()
         {
+            owner.game.IsMouseVisible = true;
+
             buttonManager = new ButtonManager();
             var image = content.Load<Texture2D>("Game/menu");
             var button = new ButtonImage(new Image(image));

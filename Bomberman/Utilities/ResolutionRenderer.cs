@@ -87,7 +87,7 @@ namespace Bomberman.Utilities
                 //calculate new ratio
                 //mark for refresh
                 _dirtyMatrix = true;
-                BackgroundColor = Color.White;
+                BackgroundColor = new Color(0, 18, 102);
             }
 
             /// <summary>
