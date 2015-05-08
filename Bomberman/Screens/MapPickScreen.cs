@@ -68,8 +68,8 @@ namespace Bomberman.Screens
 
             if (state.LeftButton == ButtonState.Released)
                 presse = false;
-
-            selectedButton.Enabled = false;
+            if (selectedButton != null)
+                selectedButton.Enabled = false;
             for (int i = (page - 1) * 6; i < page * 6; i++)
             {
                 if (maps.Count == i)
@@ -114,6 +114,9 @@ namespace Bomberman.Screens
             }
             modePicture.Postion.X = MainGame.VIRTUAL_RESOLUTION_WIDTH/2 - modePicture.GetWidth()/2;
             modePicture.Postion.Y = MainGame.VIRTUAL_RESOLUTION_HEIGHT - modePicture.GetHeight() - 50;
+
+            if (!Directory.Exists("Maps"))
+                Directory.CreateDirectory("Maps");
 
             files = Directory.GetFiles("Maps", "*.map").ToList();
             foreach (var file in files)

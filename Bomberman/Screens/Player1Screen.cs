@@ -288,7 +288,7 @@ namespace Bomberman.Screens
             if (Properties.Settings.Default.Music)
             {
                 backgroundMusic = content.Load<SoundEffect>("Game/Sound/player1music.wav").CreateInstance();
-                backgroundMusic.Volume = 0.5f;
+                backgroundMusic.Volume = 0.2f;
                 backgroundMusic.IsLooped = true;
                 backgroundMusic.Play();
             }

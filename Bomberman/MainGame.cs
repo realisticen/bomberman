@@ -84,16 +84,17 @@ namespace Bomberman
                 graphics.ApplyChanges();
 
                 cam = new ResolutionRenderer(this, VIRTUAL_RESOLUTION_WIDTH, VIRTUAL_RESOLUTION_HEIGHT, GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width, GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height);
+                Window.Position = new Point(0, 0);
+
             }
             else
             {
                 graphics.PreferredBackBufferWidth = VIRTUAL_RESOLUTION_WIDTH;
                 graphics.PreferredBackBufferHeight = VIRTUAL_RESOLUTION_HEIGHT;
                 graphics.ApplyChanges();
-
-                cam = new ResolutionRenderer(this, VIRTUAL_RESOLUTION_WIDTH, VIRTUAL_RESOLUTION_HEIGHT, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);                
+                cam = new ResolutionRenderer(this, VIRTUAL_RESOLUTION_WIDTH, VIRTUAL_RESOLUTION_HEIGHT, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+                CenterWindow();              
             }
-            Window.Position = new Point(0, 0);
         }
 
         /// <summary>
