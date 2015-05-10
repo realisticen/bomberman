@@ -26,7 +26,7 @@ namespace Bomberman.Screens
 
         public override void Update(GameTime gameTime)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.Enter) || image.Alpha > 1.6f || Mouse.GetState().RightButton == ButtonState.Pressed)
+            if (Keyboard.GetState().IsKeyDown(Keys.Enter) || image.Alpha > 2f || Mouse.GetState().RightButton == ButtonState.Pressed)
                 owner.ChangeScreen(new MenuScreen(owner));
             image.Alpha += 0.01f;
         }
