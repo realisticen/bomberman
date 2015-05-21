@@ -88,7 +88,7 @@ namespace Bomberman.Screens
                     }
                     break;
                 }
-                //maps[i].DrawSmall(spriteBatch, scale, new Vector2(((i % 6) % 3) * 430 + 38, 250 * (int)((i % 6) / 3) + 140));
+                
             }
         }
 
@@ -180,14 +180,6 @@ namespace Bomberman.Screens
                 button.SetPosition(1050, 90);
                 buttonManager.Buttons.Add(button);
             }
-
-            //Map map = JsonConvert.DeserializeObject<Map>(File.ReadAllText("Maps/2.map"));
-
-            //owner.ChangeScreen(new Player1Screen(owner, map));
-            //owner.ChangeScreen(new MapEditorScreen(owner, maps[0], "3.map"));
-
-            //var json = JsonConvert.SerializeObject(map); // TODO: SHRAN KT JSON PA NALODI KT JSON...
-            //File.WriteAllText("Maps/test.map", json);
 
         }
 

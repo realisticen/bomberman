@@ -53,7 +53,6 @@ namespace Bomberman
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
             cam = new ResolutionRenderer(this, VIRTUAL_RESOLUTION_WIDTH, VIRTUAL_RESOLUTION_HEIGHT, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
             if (Properties.Settings.Default.FullScreen)
                 SetFullScreen(true);
@@ -106,7 +105,7 @@ namespace Bomberman
             // Create a new SpriteBatch, which can be used to draw textures.
             screenManager = new ScreenManager(this);
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            screenManager.ChangeScreen(new SplashScreen(screenManager)); // todo: naštimi da swe začene spalshcsreen
+            screenManager.ChangeScreen(new SplashScreen(screenManager));
         }
 
         /// <summary>
@@ -124,8 +123,6 @@ namespace Bomberman
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)) // TODO: Odstran tole
-            //    Exit();
 
             screenManager.Update(gameTime);
             base.Update(gameTime);

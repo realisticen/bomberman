@@ -70,7 +70,7 @@ namespace Bomberman.GameStuff
             if (life < 0)
             {
                 if (Properties.Settings.Default.Sound)
-                    ExplosionSoundEffect.Play(Settings.SoundEffectsVolume, 0, 0);
+                    ExplosionSoundEffect.Play(Properties.Settings.Default.Volume, 0, 0);
                 IsAlive = false;
                 Owner.BombDestroyed();
                 return;
@@ -103,7 +103,6 @@ namespace Bomberman.GameStuff
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(spriteSheet, new Rectangle((int)Position.X, (int)Position.Y, Width, Height), sourceRectangle, BombColor);
-            //spriteBatch.Draw(spriteSheet, MapCollisionBox, Color.Red); // Začasno, da se vidi collisionBox...
             
         }
     }

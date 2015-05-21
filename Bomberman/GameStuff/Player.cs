@@ -194,7 +194,7 @@ namespace Bomberman.GameStuff
             if(Death != null)
                 Death();
             if (Properties.Settings.Default.Sound)
-                DeathSoundEffect.Play(Settings.SoundEffectsVolume, 0, 0);
+                DeathSoundEffect.Play(Properties.Settings.Default.Volume, 0, 0);
             PlayerColor = Color.Red;
             IsAlive = false;
         }

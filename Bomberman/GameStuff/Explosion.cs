@@ -58,8 +58,6 @@ namespace Bomberman.GameStuff
                 spriteBatch.Draw(sprteSheetFire, new Vector2(verticalExplosion.X + offSet, verticalExplosion.Y + ( i * verticalExplosion.Width) + offSet), sourceRectangle, Color.White);
                 
             }
-            //spriteBatch.Draw(sprteSheetFire, verticalExplosion, sprteSheetFire.Bounds, Color.White);
-            //spriteBatch.Draw(sprteSheetFire, horizontalExplosion, sprteSheetFire.Bounds, Color.White);
         }
 
         private int update = 0;
@@ -71,7 +69,7 @@ namespace Bomberman.GameStuff
 
             if (update > frameTime)
             {
-                sourceRectangle.X += fireSize; // TODO: Ured, da bo šlo od leve prot desn..
+                sourceRectangle.X += fireSize;
                 update = 0;
             }
             update++;

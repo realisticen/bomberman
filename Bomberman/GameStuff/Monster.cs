@@ -170,7 +170,6 @@ namespace Bomberman.GameStuff
                 lastdDirecton = Directons.RIGHT;
             }
             HitBox = destinationRectangle;
-            //MapCollisionBox = new Rectangle((int)Position.X + 6, (int)Position.Y + 65, 36, 21);
             MapCollisionBox = new Rectangle((int)Position.X, (int)Position.Y, sourceRectangle.Width, Height);
             HitBox = MapCollisionBox;
             velocity *= 0;
@@ -188,7 +187,7 @@ namespace Bomberman.GameStuff
         internal void Kill()
         {
             if (Properties.Settings.Default.Sound)
-                DeathSoundEffect.Play(Settings.SoundEffectsVolume, 0, 0);
+                DeathSoundEffect.Play(Properties.Settings.Default.Volume, 0, 0);
         }
     }
 }
